@@ -1,20 +1,372 @@
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<title>Stemkoski's github page</title>
-<link rel=stylesheet href="index.css"/>
+	<title>Particle Engine (Three.js)</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link rel=stylesheet href="css/base.css"/>
 </head>
 <body>
 
-<div class="bigTitle">Examples!</div>
+<script src="js/Three.js"></script>
+<script src="js/Detector.js"></script>
+<script src="js/Stats.js"></script>
+<script src="js/OrbitControls.js"></script>
+<script src="js/THREEx.KeyboardState.js"></script>
+<script src="js/THREEx.FullScreen.js"></script>
+<script src="js/THREEx.WindowResize.js"></script>
 
-<hr>
+<script src="js/ParticleEngine.js"></script>
+<script src="js/ParticleEngineExamples.js"></script>
 
-This website is mainly a repository for examples of JavaScript libraries:
-<ul>
-<li><a href="Three.js/index.html">Three.js examples</a></li>
-<li><a href="7DFPS/index.html">Entry for the 7DFPS Game Jam (written with Three.js)</a></li>
-<li><a href="MathBox/index.html">MathBox examples (built using Three.js)</a></li>
-</ul>
+<!-- GUI for experimenting with values -->		
+<script type='text/javascript' src='js/DAT.GUI.min.js'></script>
+
+<!-- jQuery code to display an information button and box when clicked. -->
+<script src="js/jquery-1.9.1.js"></script>
+<script src="js/jquery-ui.js"></script>
+<link rel=stylesheet href="css/jquery-ui.css" />
+<link rel=stylesheet href="css/info.css"/>
+<script src="js/info.js"></script>
+<div id="infoButton"></div>
+<div id="infoBox" title="Demo Information">
+This three.js demo is part of a collection at
+<a href="http://stemkoski.github.io/Three.js/">http://stemkoski.github.io/Three.js/</a>
+</div>
+<!-- ------------------------------------------------------------ -->
+
+<div id="ThreeJS" style="position: absolute; left:0px; top:0px"></div>
+<script>
+/*
+	Three.js "tutorials by example"
+	Author: Lee Stemkoski
+	Date: July 2013 (three.js v59dev)
+*/
+
+// MAIN
+
+// standard global variables
+var container, scene, camera, renderer, controls, stats;
+var keyboard = new THREEx.KeyboardState();
+var clock = new THREE.Clock();
+// custom global variables
+var cube;
+
+init();
+animate();
+
+
+// FUNCTIONS 		
+function init() 
+{
+	// SCENE
+	scene = new THREE.Scene();
+	// CAMERA
+	var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
+	var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 2, FAR = 5000;
+	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
+	scene.add(camera);
+	camera.position.set(0,200,400);
+	camera.lookAt(scene.position);	
+	// RENDERER
+	if ( Detector.webgl )
+		renderer = new THREE.WebGLRenderer( {antialias:true} );
+	else
+		renderer = new THREE.CanvasRenderer(); 
+	renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+	container = document.getElementById( 'ThreeJS' );
+	container.appendChild( renderer.domElement );
+	// EVENTS
+	THREEx.WindowResize(renderer, camera);
+	THREEx.FullScreen.bindKey({ charCode : 'm'.charCodeAt(0) });
+	// CONTROLS
+	controls = new THREE.OrbitControls( camera, renderer.domElement );
+	// STATS
+	stats = new Stats();
+	stats.domElement.style.position = 'absolute';
+	stats.domElement.style.bottom = '0px';
+	stats.domElement.style.zIndex = 100;
+	container.appendChild( stats.domElement );
+	// LIGHT
+	var light = new THREE.PointLight(0xffffff);
+	light.position.set(0,250,0);
+	scene.add(light);
+
+	// FLOOR
+	(function(){
+	  console.log('Render floor');
+		var floorTexture = new THREE.ImageUtils.loadTexture( 'images/checkerboard.jpg' );
+		floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
+		floorTexture.repeat.set( 10, 10 );
+		var floorMaterial = new THREE.MeshBasicMaterial( { color: 0x444444, map: floorTexture, side: THREE.DoubleSide } );
+		var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
+		var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+		floor.position.y = -10.5;
+		floor.rotation.x = Math.PI / 2;
+		scene.add(floor);
+	})();
+
+	// Wall1
+	function renderPlane(geometry, x,y,z, rotation) {
+	  console.log('Render plane', geometry);
+	  let defaultPlaneGeometry = {
+    	position: {
+    		x: 0,
+    		y: 0,
+    		z: 0
+    	},
+    	rotation: {
+    		x: 0,
+    		y: 0,
+    		z: 0
+    	},
+    	size: {
+    		h: 550,
+    		w: 550
+    	}
+    };
+
+    geometry = geometry || defaultPlaneGeometry;
+    geometry.size = geometry.size || defaultPlaneGeometry.size;
+
+		var texture = new THREE.ImageUtils.loadTexture( 'images/rock-512.jpg' );
+		texture.wrapS = texture.wrapT = THREE.RepeatWrapping; 
+		texture.repeat.set( 10, 10 );
+		var material = new THREE.MeshBasicMaterial( { color: 0x444444, map: texture, side: THREE.DoubleSide } );
+		var floorGeometry = new THREE.PlaneGeometry(geometry.size.h, geometry.size.w, 10, 10);
+		var wall1 = new THREE.Mesh(floorGeometry, material);
+		wall1.position.set(geometry.position.x, geometry.position.y, geometry.position.z);
+    wall1.rotation.set(geometry.rotation.x, geometry.rotation.y, geometry.rotation.z);
+
+		scene.add(wall1);
+	};
+
+	// back wall
+	renderPlane({
+		position: {
+			x: 0,
+			y: 150,
+			z: -275
+		},
+		rotation: {
+			x: Math.PI,
+			y: 0,
+			z: 0,
+		},
+		size: {
+  		h: 550,
+  		w: 300
+  	}
+	});
+
+	// side walls
+	renderPlane({
+		position: {
+			x: -275,
+			y: 150,
+			z: 0
+		},
+		rotation: {
+			x: 0,
+			y: Math.PI / 2,
+			z: 0,
+		},
+		size: {
+  		h: 540,
+  		w: 300
+  	}
+	});
+
+	renderPlane({
+		position: {
+			x: 275,
+			y: 150,
+			z: 0
+		},
+		rotation: {
+			x: 0,
+			y: Math.PI / 2,
+			z: 0,
+		},
+		size: {
+  		h: 540,
+  		w: 300
+  	}
+	});
+
+	// Ceiling
+	renderPlane({
+		position: {
+			x: -173,
+			y: 380,
+			z: 0, 
+		},
+		rotation: {
+			x: Math.PI / 2,
+			y: Math.PI / 5,
+			z: 0,
+		},
+		size: {
+			h: 425,
+			w: 550
+		}
+	});
+
+	// Ceiling
+	renderPlane({
+		position: {
+			x: 173,
+			y: 380,
+			z: 0, 
+		},
+		rotation: {
+			x: Math.PI / 2,
+			y: - Math.PI / 5,
+			z: 0,
+		},
+		size: {
+			h: 425,
+			w: 550
+		}
+	});
+
+	// SKYBOX/FOG
+	var skyBoxGeometry = new THREE.CubeGeometry( 4000, 4000, 4000 );
+	var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0x000000, side: THREE.BackSide } );
+	var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
+    scene.add(skyBox);
+	
+	////////////
+	// CUSTOM //
+	////////////
+
+	this.engines = [];
+	let smokeData = [
+		{
+			coords:{
+				x: 0,
+				y: 0,
+				z: 0
+			},
+			intensity: .5
+		},
+		{
+			coords: {
+				x: 0,
+				y: 0,
+				z: 300
+			},
+			intensity: 2			
+		}
+	];
+
+	smokeData.forEach(function(smoke, i) {
+		smoke.particleValues = Object.assign({}, Examples.smokeExperiment);
+		smoke.particleValues.positionBase = new THREE.Vector3( smoke.coords.x, smoke.coords.y, smoke.coords.z );
+		smoke.particleValues.opacityTween = new Tween( [0.2, 2], [smoke.intensity, 0] );
+		
+		console.log('init smoke', smoke, smoke.particleValues.positionBase, smoke.particleValues.opacityTween);
+
+		var engine = new ParticleEngine();
+		engine.setValues( smoke.particleValues );
+		engine.initialize();
+
+		this.engines.push(engine);
+	});
+
+	// this.engine = new ParticleEngine();
+	// // initial value
+	// engine.setValues( Examples.smokeExperiment );
+	// engine.initialize();
+	
+	// GUI for experimenting with parameters
+
+	// gui = new dat.GUI();
+
+	// parameters = 
+	// {
+	// 	fountain:   function() { restartEngine( Examples.fountain   ); },
+	// 	startunnel: function() { restartEngine( Examples.startunnel ); },		
+	// 	starfield:  function() { restartEngine( Examples.starfield  ); },		
+	// 	fireflies:  function() { restartEngine( Examples.fireflies  ); },		
+	// 	clouds:     function() { restartEngine( Examples.clouds     ); },		
+	// 	smoke:      function() { restartEngine( Examples.smoke      ); },	
+	// 	smokeExperiment:  function() { restartEngine( Examples.smokeExperiment ); },
+	// 	fireball:   function() { restartEngine( Examples.fireball   ); },		
+	// 	candle:     function() { restartEngine( Examples.candle     ); },		
+	// 	rain:       function() { restartEngine( Examples.rain       ); },		
+	// 	snow:       function() { restartEngine( Examples.snow       ); },		
+	// 	firework:   function() { restartEngine( Examples.firework   ); }		
+	// };
+
+	// gui.add( parameters, 'fountain'   ).name("Star Fountain");
+	// gui.add( parameters, 'startunnel' ).name("Star Tunnel");
+	// gui.add( parameters, 'starfield'  ).name("Star Field");
+	// gui.add( parameters, 'fireflies'  ).name("Fireflies");
+	// gui.add( parameters, 'clouds'     ).name("Clouds");
+	// gui.add( parameters, 'smokeExperiment').name("SmokeExperiment");
+	// gui.add( parameters, 'smoke'      ).name("Smoke");
+	// gui.add( parameters, 'fireball'   ).name("Fireball");
+	// gui.add( parameters, 'candle'     ).name("Candle");
+	// gui.add( parameters, 'rain'       ).name("Rain");
+	// gui.add( parameters, 'snow'       ).name("Snow");
+	// gui.add( parameters, 'firework'   ).name("Firework");
+	
+	// gui.open();	
+}
+
+function animate() 
+{
+  requestAnimationFrame( animate );
+	render();		
+	update();
+}
+
+function restartEngine(parameters)
+{
+	resetCamera();
+	
+	this.engines.forEach((engine) => {
+		engine.destroy();
+		engine = new ParticleEngine();
+		engine.setValues( parameters );
+		engine.initialize();
+	})
+}
+
+function resetCamera()
+{
+	// CAMERA
+	var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
+	var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
+	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
+	//camera.up = new THREE.Vector3( 0, 0, 1 );
+	camera.position.set(0,200,400);
+	camera.lookAt(scene.position);	
+	scene.add(camera);
+	
+	controls = new THREE.OrbitControls( camera, renderer.domElement );
+	THREEx.WindowResize(renderer, camera);
+}
+
+
+function update()
+{
+	controls.update();
+	stats.update();
+	
+	var dt = clock.getDelta();
+	this.engines.forEach(function(engine) {
+		engine.update( dt * 0.5 );	
+	});
+}
+
+function render() 
+{
+	renderer.render( scene, camera );
+}
+
+</script>
 
 </body>
 </html>
