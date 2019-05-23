@@ -1,7 +1,7 @@
 (function() {
-  var x = -225;
+  var x = -210;
   var y = 70;
-  var z = -250
+  var z = -230
 
   var smokePointsData = [];
 
