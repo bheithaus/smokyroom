@@ -94,7 +94,6 @@ function init()
 
 	// FLOOR
 	(function(){
-	  console.log('Render floor');
 		var floorTexture = new THREE.ImageUtils.loadTexture( 'images/checkerboard.jpg' );
 		floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
 		floorTexture.repeat.set( 10, 10 );
@@ -106,7 +105,7 @@ function init()
 		scene.add(floor);
 	})();
 
-	// Wall1
+	// house box
 	function renderPlane(geometry, x,y,z, rotation) {
 	  console.log('Render plane', geometry);
 	  let defaultPlaneGeometry = {
@@ -229,6 +228,19 @@ function init()
 			w: 550
 		}
 	});
+
+	// cylinder
+	(function(){
+		var geometry = new THREE.CylinderGeometry( 50, 50, 100, 32 );
+		var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+		var cylinder = new THREE.Mesh( geometry, material );
+
+		cylinder.position.set(100,0,100);
+		
+		console.log('CYLINDER', cylinder)
+		
+		scene.add( cylinder );
+	})();
 
 	// SKYBOX/FOG
 	var skyBoxGeometry = new THREE.CubeGeometry( 4000, 4000, 4000 );

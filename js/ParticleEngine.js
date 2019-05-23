@@ -107,7 +107,7 @@ function Particle()
 	this.alive = 0; // use float instead of boolean for shader purposes	
 }
 
-Particle.prototype.update = function(dt)
+Particle.prototype.update = function(dt, opacity)
 {
 	this.position.add( this.velocity.clone().multiplyScalar(dt) );
 	this.velocity.add( this.acceleration.clone().multiplyScalar(dt) );
@@ -130,8 +130,12 @@ Particle.prototype.update = function(dt)
 		this.color = new THREE.Color().setHSL( colorHSL.x, colorHSL.y, colorHSL.z );
 	}
 	
-	if ( this.opacityTween.times.length > 0 )
+	if ( opacity ) {
+		this.opacity = opacity;
+	}
+	else if ( this.opacityTween.times.length > 0 ) {
 		this.opacity = this.opacityTween.lerp( this.age );
+	}
 }
 	
 ///////////////////////////////////////////////////////////////////////////////
@@ -366,7 +370,7 @@ ParticleEngine.prototype.initialize = function()
 	scene.add( this.particleMesh );
 }
 
-ParticleEngine.prototype.update = function(dt)
+ParticleEngine.prototype.update = function(dt, opacity)
 {
 	var recycleIndices = [];
 	
@@ -375,7 +379,7 @@ ParticleEngine.prototype.update = function(dt)
 	{
 		if ( this.particleArray[i].alive )
 		{
-			this.particleArray[i].update(dt);
+			this.particleArray[i].update(dt, opacity);
 
 			// check if particle should expire
 			// could also use: death by size<0 or alpha<0.
