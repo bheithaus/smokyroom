@@ -1,0 +1,22 @@
+{
+  "name": "smokyroom",
+  "version": "0.0.1",
+  "description": "Three.js smoke filled room visualization",
+  "main": "Three.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bheithaus/smokyroom.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bheithaus/smokyroom/issues"
+  },
+  "homepage": "https://github.com/bheithaus/smokyroom#readme",
+  "dependencies": {
+    "express": "^4.17.0"
+  }
+}

@@ -131,6 +131,7 @@ Particle.prototype.update = function(dt, opacity)
 	}
 	
 	if ( opacity ) {
+		console.log('update particle opacity', opacity);
 		this.opacity = opacity;
 	}
 	else if ( this.opacityTween.times.length > 0 ) {
