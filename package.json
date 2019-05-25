@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/bheithaus/smokyroom#readme",
   "dependencies": {
+    "dat.gui": "^0.7.6",
     "express": "^4.17.0"
   }
 }

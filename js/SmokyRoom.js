@@ -1,6 +1,6 @@
-// TODO 
+// TODO
 // - ONE SOURCE OF TRUTH, Data shall only be stored once
-          // use conversion functions for any values that are calculated from the 
+          // use conversion functions for any values that are calculated from the
           // source of truth
 
 // - SERIOUS clean up and beautify (look into docker / ES6 / babel setup)
@@ -8,7 +8,7 @@
 
 
 /*
-  Smoky room 
+  Smoky room
 
   date: 5/24/2019
   author: Brian Heithaus
@@ -45,7 +45,7 @@ $(function() {
     });
 
   // GUI for experimenting with parameters
-  gui = new dat.GUI();  
+  gui = new dat.GUI();
   parameters = {
     smoke:  function() { restartEngine( Examples.smoke   ); },
     colors: function() { restartEngine( Examples.colors ); }
@@ -55,12 +55,12 @@ $(function() {
   gui.add( parameters, 'colors' ).name("Color Gradient");
 
 
-  
+
   gui.open();
 })
 
-// FUNCTIONS    
-function init() 
+// FUNCTIONS
+function init()
 {
   // SCENE
   scene = new THREE.Scene();
@@ -70,12 +70,12 @@ function init()
   camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
   scene.add(camera);
   camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
-  camera.lookAt(scene.position);  
+  camera.lookAt(scene.position);
   // RENDERER
   if ( Detector.webgl )
     renderer = new THREE.WebGLRenderer( {antialias:true} );
   else
-    renderer = new THREE.CanvasRenderer(); 
+    renderer = new THREE.CanvasRenderer();
   renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
   container = document.getElementById( 'ThreeJS' );
   container.appendChild( renderer.domElement );
@@ -103,13 +103,13 @@ function init()
   // var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0xbad4ff, side: THREE.BackSide } );
   // var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
   //   // scene.add(skyBox);
-  
+
   ////////////
   // CUSTOM //
   ////////////
 }
 
-function getSmokeData() { 
+function getSmokeData() {
   return $.get('/csv', function(response) {
     // scale to fit our 3d model
     var scale = 180,
@@ -121,26 +121,29 @@ function getSmokeData() {
 
     // use array of sensors to position smoke emitters
     response.sensors.forEach(function(sensor, i) {
-      smokeDataPoints.push({
-        coords: {
-          x: offsetX + scale * parseFloat(sensor['X']),
-          y: offsetY + scale * parseFloat(sensor['Y']),
-          z: offsetZ + scale * parseFloat(sensor['Z'])
-        },
-        intensity: response.readings[sensor['Ref No.'] + trialNumber] || []
-      });
+
+      if (!response.readings[sensor['Ref No.'] + trialNumber]) {
+        console.log('WARNING: missing readings for Sensor - Ref No. ', sensor['Ref No.'])
+      } else {
+        smokeDataPoints.push({
+          coords: {
+            x: offsetX + scale * parseFloat(sensor['X']),
+            y: offsetY + scale * parseFloat(sensor['Y']),
+            z: offsetZ + scale * parseFloat(sensor['Z'])
+          },
+          intensity: response.readings[sensor['Ref No.'] + trialNumber]
+        });
+      }
+
     });
 
     window.smokeDataPoints = smokeDataPoints;
-    
-    gui.add({ 'num': elapsedTime }, 'num')
+
+    window.timeSlider = gui.add({ 'time': elapsedTime }, 'time')
       .min(0)
       .max(smokeDataPoints[0] && smokeDataPoints[0].intensity.length)
       .step(1)
-      .listen()
-      .onChange(function(update) { 
-        console.log('outside change', update)
-
+      .onChange(function(update) {
         elapsedTime = update;
       });
   });
@@ -164,12 +167,12 @@ function createSmokePoints() {
 
     window.particleEngines.push(engine);
   });
-} 
+}
 
-function animate() 
+function animate()
 {
   requestAnimationFrame( animate );
-  render();   
+  render();
   update();
   // up
 }
@@ -177,7 +180,7 @@ function animate()
 function restartEngine(parameters)
 {
   resetCamera();
-  
+
   // change to color renders or smoke renders
 
   window.particleEngines.forEach((engine) => {
@@ -196,9 +199,9 @@ function resetCamera()
   camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
   //camera.up = new THREE.Vector3( 0, 0, 1 );
   camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
-  camera.lookAt(scene.position);  
+  camera.lookAt(scene.position);
   scene.add(camera);
-  
+
   controls = new THREE.OrbitControls( camera, renderer.domElement );
   THREEx.WindowResize(renderer, camera);
 }
@@ -207,7 +210,7 @@ function update()
 {
   controls.update();
   stats.update();
-  
+
   var dt = clock.getDelta();
   var opacity, updateOpacity;
 
@@ -218,6 +221,7 @@ function update()
     elapsedTime += 1;
     clock.sumDT = 0;
     updateOpacity = true;
+    window.timeSlider.setValue(elapsedTime);
   }
 
   window.particleEngines.forEach(function(engine) {
@@ -232,7 +236,7 @@ function update()
   });
 }
 
-function render() 
+function render()
 {
   renderer.render( scene, camera );
 }
@@ -242,7 +246,7 @@ function drawHouse(scene) {
   (function(){
     console.log('Render checkerboard floor');
     var floorTexture = new THREE.ImageUtils.loadTexture( 'images/checkerboard.jpg' );
-    floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
+    floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
     floorTexture.repeat.set( 10, 10 );
     var floorMaterial = new THREE.MeshBasicMaterial( { color: 0x444444, map: floorTexture, side: THREE.DoubleSide } );
     var floorGeometry = new THREE.PlaneGeometry(1500, 1500, 10, 10);
@@ -277,7 +281,7 @@ function drawHouse(scene) {
     // geometry.size = geometry.size || defaultPlaneGeometry.size;
 
     var texture = new THREE.ImageUtils.loadTexture( 'images/rock-512.jpg' );
-    texture.wrapS = texture.wrapT = THREE.RepeatWrapping; 
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set( 10, 10 );
     var material = new THREE.MeshBasicMaterial( { color: 0x444444, map: texture, side: THREE.DoubleSide } );
     if (geometry.opacity && geometry.opacity < 1) {
@@ -351,7 +355,7 @@ function drawHouse(scene) {
     position: {
       x: -173,
       y: 540,
-      z: 0, 
+      z: 0,
     },
     rotation: {
       x: Math.PI / 2,
@@ -370,7 +374,7 @@ function drawHouse(scene) {
     position: {
       x: 173,
       y: 540,
-      z: 0, 
+      z: 0,
     },
     rotation: {
       x: Math.PI / 2,
@@ -390,7 +394,7 @@ function drawHouse(scene) {
     var material = new THREE.MeshBasicMaterial( {color: 0x384170} );
     var cylinder = new THREE.Mesh( geometry, material );
     cylinder.position.set(200,0,-200);
-    
+
     console.log('CYLINDER', cylinder)
     scene.add( cylinder );
   })();
