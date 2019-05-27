@@ -1,25 +1,30 @@
+var POSITION_SPREAD = 40,
+    PARTICLE_COUNT_INTENSITY_SCALE = 10;
+
 window.smokeParticleEngineMeta = {
   positionStyle    : Type.CUBE,
   positionBase     : new THREE.Vector3( 0, 0, 0 ),
-  positionSpread   : new THREE.Vector3( 6, 0, 6 ),
+  positionSpread   : new THREE.Vector3( POSITION_SPREAD, POSITION_SPREAD, POSITION_SPREAD ),
 
   velocityStyle    : Type.CUBE,
-  velocityBase     : new THREE.Vector3( 0, 0, 0 ),
-  velocitySpread   : new THREE.Vector3( 0, 3, 0 ), 
-  accelerationBase : new THREE.Vector3( 0, -5, 0 ),
-  
+  velocityBase     : new THREE.Vector3( -3, -3, -3 ),
+  velocitySpread   : new THREE.Vector3( 3, 3, 3 ),
+  accelerationBase : new THREE.Vector3( 0, 0, 0 ),
+
   particleTexture : THREE.ImageUtils.loadTexture( 'images/smokeparticle.png'),
 
   angleBase               : 0,
   angleSpread             : 720,
   angleVelocityBase       : 0,
-  angleVelocitySpread     : 720,
-  
-  sizeTween    : new Tween( [0, 1], [32, 128] ),
-  opacityBase: 0, 
-  colorTween   : new Tween( [0.4, 1], [ new THREE.Vector3(0,0,0.2), new THREE.Vector3(0, 0, 0.5) ] ),
+  angleVelocitySpread     : 180,
 
-  particlesPerSecond : 10,
-  particleDeathAge   : 2.0,   
-  emitterDeathAge    : 100
+  sizeTween    : new Tween( [0, 3], [32, 128] ),
+  opacityTween : new Tween( [0, 3], [1, 0] ),
+  colorTween   : new Tween( [0.4, 3], [ new THREE.Vector3(0,0,0.2), new THREE.Vector3(0, 0, 0.5) ] ),
+
+  particlesPerSecond : 5,
+  particleDeathAge   : 5,
+  emitterDeathAge    : 100,
+
+  particleCountIntensityScale: PARTICLE_COUNT_INTENSITY_SCALE
 };
