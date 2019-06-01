@@ -1,7 +1,9 @@
+const PORT = process.env.PORT || 5000
+
 const express = require('express')
 const app = express()
 
-// process CSVs
+// parse CSVs
 const fs = require('fs')
 const path = require('path')
 const CsvDb = require('./csv-db')
@@ -66,6 +68,4 @@ app.use('/csv', (request, response) => {
   response.json(csvData)
 })
 
-app.listen(3000)
-
-console.log('APP LIVE AND LISTENING  ----   http://localhost:3000')
+app.listen(PORT, () => console.log(`Listening on ${ PORT }`))
