@@ -152,9 +152,7 @@ class Smoke {
     return opacity;
   }
 
-  evolveSmoke(triggeredByTimeSlider) {
-    if (triggeredByTimeSlider) return ;
-
+  evolveSmoke() {
     const {
       smokeSensors,
       camera,
@@ -260,7 +258,7 @@ class Smoke {
       change: (event, ui) => {
         // ~~ === performance optimized Math.floor
         this.elapsedTime = ~~ui.value;
-        this.evolveSmoke(true);
+        this.evolveSmoke();
         this.updateDisplayBox();
       }
     });
@@ -410,13 +408,13 @@ class Smoke {
   }
 
   update() {
-    if (this.paused) return;
+    if (!this.paused) {
+      this.clock.intervalCounter += this.clock.getDelta();
+    }
 
-    this.clock.intervalCounter += this.clock.getDelta();
-
+    this.evolveSmoke();
     this.controls.update();
     this.stats.update();
-    this.evolveSmoke();
     this.render();
 
     requestAnimationFrame(this.update);
