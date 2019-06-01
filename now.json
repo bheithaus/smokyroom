@@ -3,8 +3,5 @@
     "name": "smokyRoom",
     "builds": [
         { "src": "index.js", "use": "@now/node" }
-    ],
-    // "routes": [
-    //     { "src": "/(.*)", "dest": "/$1" }
-    // ]
+    ]
 }
