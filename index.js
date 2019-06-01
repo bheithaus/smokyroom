@@ -8,8 +8,8 @@ const CsvDb = require('./csv-db')
 const csvLabels = require('./csv/parser')
 
 const csvPaths = {
-  sensors: './csv/sensors/positions.csv',
-  readings: './csv/particulate-matter'
+  sensors: join(__dirname, './csv/sensors/positions.csv'),
+  readings: join(__dirname, './csv/particulate-matter')
 }
 
 const csvData = {
