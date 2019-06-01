@@ -60,7 +60,7 @@ fs.readdir(csvPaths.readings, (err, files) => {
 });
 
 // static server
-app.use('/', express.static(__dirname))
+app.use('/', express.static(path.join(path.join(__dirname), '/src')))
 
 app.use('/csv', (request, response) => {
   response.json(csvData)
