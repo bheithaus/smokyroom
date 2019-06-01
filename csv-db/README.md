@@ -1,3 +1,10 @@
+# Custom CSV Reader / parser - for Aprovecho Smoke room demo
+
+Authored:
+5/24/2019
+Brian Heithaus
+
+
 # CSV based Database
 
 [![Build Status](https://secure.travis-ci.org/sspringer82/nodeCsvDb.png?branch=master)](http://travis-ci.org/sspringer82/nodeCsvDb)

@@ -21,9 +21,6 @@ THREE.GPUParticleSystem = function ( options ) {
 
   options = options || {};
 
-  // set start position
-  this.position.set(options.position.x,options.position.y,options.position.z);
-
   // parse options and use defaults
 
   this.PARTICLE_COUNT = options.maxParticles || 1000000;
@@ -175,10 +172,10 @@ THREE.GPUParticleSystem = function ( options ) {
 
   var textureLoader = new THREE.TextureLoader();
 
-  this.particleNoiseTex = this.PARTICLE_NOISE_TEXTURE || textureLoader.load( 'images/smoke512.png' );
+  this.particleNoiseTex = this.PARTICLE_NOISE_TEXTURE || textureLoader.load( 'textures/perlin-512.png' );
   this.particleNoiseTex.wrapS = this.particleNoiseTex.wrapT = THREE.RepeatWrapping;
 
-  this.particleSpriteTex = this.PARTICLE_SPRITE_TEXTURE || textureLoader.load( 'images/smoke512.png' );
+  this.particleSpriteTex = this.PARTICLE_SPRITE_TEXTURE || textureLoader.load( 'textures/particle2.png' );
   this.particleSpriteTex.wrapS = this.particleSpriteTex.wrapT = THREE.RepeatWrapping;
 
   this.particleShaderMat = new THREE.ShaderMaterial( {
@@ -233,6 +230,7 @@ THREE.GPUParticleSystem = function ( options ) {
     var currentContainer = this.particleContainers[ Math.floor( this.PARTICLE_CURSOR / this.PARTICLES_PER_CONTAINER ) ];
 
     currentContainer.spawnParticle( options );
+
   };
 
   this.update = function ( time ) {
@@ -296,13 +294,14 @@ THREE.GPUParticleContainer = function ( maxParticles, particleSystem ) {
   this.particleShaderGeo.addAttribute( 'lifeTime', new THREE.BufferAttribute( new Float32Array( this.PARTICLE_COUNT ), 1 ).setDynamic( true ) );
 
   // material
+
   this.particleShaderMat = this.GPUParticleSystem.particleShaderMat;
 
   var position = new THREE.Vector3();
   var velocity = new THREE.Vector3();
   var color = new THREE.Color();
 
-  this.spawnParticle = function ( options , intensity ) {
+  this.spawnParticle = function ( options ) {
 
     var positionStartAttribute = this.particleShaderGeo.getAttribute( 'positionStart' );
     var startTimeAttribute = this.particleShaderGeo.getAttribute( 'startTime' );
@@ -316,7 +315,7 @@ THREE.GPUParticleContainer = function ( maxParticles, particleSystem ) {
 
     // setup reasonable default values for all arguments
 
-    position = this.GPUParticleSystem.position;
+    position = options.position !== undefined ? position.copy( options.position ) : position.set( 0, 0, 0 );
     velocity = options.velocity !== undefined ? velocity.copy( options.velocity ) : velocity.set( 0, 0, 0 );
     color = options.color !== undefined ? color.set( options.color ) : color.set( 0xffffff );
 

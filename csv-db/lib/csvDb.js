@@ -24,12 +24,16 @@ class CsvDB {
 
   transform(input) {
     if (input === '') {
-      return [];
+      return { data: [] };
     }
 
     const lines = input.split(config.lineSeparator);
+
     let fields;
-    
+    let metadata,
+        min = 0,
+        max = 0;
+
     if (this.fields === null) {
       fields = lines
         .shift()
@@ -48,7 +52,7 @@ class CsvDB {
       for (let i = 0; i < lines.length; i++) {
         if (lines[i].includes(fields[0])) {
           // found start of stuff
-          result.metadata = lines.splice(0, i + 1);
+          metadata = lines.splice(0, i + 1);
           break;
         }
       }
@@ -60,14 +64,32 @@ class CsvDB {
         for (let j = 0; j < fields.length; j++) {
           // parse int for special case only of PM
           if (fields[j] === particulateMatterLabel) {
-            result[i][fields[j]] = parseInt(cols[j]);
+            let pm = parseInt(cols[j]);
+            result[i][fields[j]] = pm;
+
+            // find highest and lowest PM readings for this sensor
+            if (pm < min) {
+              // min
+              min = pm;
+            } else if (pm > max) {
+              // max
+              max = pm;
+            }
           } else {
             result[i][fields[j]] = cols[j];
           }
         }
       }
     }
-    return result;
+
+    return {
+      meta: {
+        min,
+        max,
+        sensorOutputHeader: metadata
+      },
+      data: result
+    };
   }
 
   async get(id) {

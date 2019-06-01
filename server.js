@@ -5,23 +5,7 @@ const app = express()
 const fs = require('fs')
 const path = require('path')
 const CsvDb = require('./csv-db')
-
-const csvLabels = {
-  sensors: [
-    'Serial No.',
-    'Vers.',
-    'HAPEx No.',
-    'X',
-    'Y',
-    'Z',
-    'XRel',
-    'YRel',
-    'ZRel',
-    'Ref No.'
-  ],
-
-  readings: ['Time Stamp', 'PM', 'compliance']
-};
+const csvLabels = require('./csv/parser')
 
 const csvPaths = {
   sensors: './csv/sensors/positions.csv',
@@ -40,7 +24,7 @@ csvDb.get().then((data)=> {
   csvData.sensors = data;
 },
 (err) => {
-  console.log(err)
+  console.warn('CSV PARSING ERROR', err)
 })
 
 // Loop through all the files in the csv directory
@@ -65,7 +49,7 @@ fs.readdir(csvPaths.readings, (err, files) => {
         const csvDb = new CsvDb(fromPath, csvLabels.readings)
         csvDb.get().then((data)=> {
           // set data on readings object
-          csvData.readings[file.replace('.csv', '')] = data; 
+          csvData.readings[file.replace('.csv', '')] = data;
         },
         (err) => {
           console.log(err)

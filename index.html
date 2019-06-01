@@ -9,43 +9,42 @@
 <body>
 
 <script src="js/Three.js"></script>
+<script src="js/GPUParticleSystem.js"></script>
+
 <script src="js/Detector.js"></script>
 <script src="js/Stats.js"></script>
 <script src="js/OrbitControls.js"></script>
-<script src="js/THREEx.KeyboardState.js"></script>
-<script src="js/THREEx.FullScreen.js"></script>
-<script src="js/THREEx.WindowResize.js"></script>
-<script src="js/ParticleEngine.js"></script>
-<script src="js/ParticleEngineMeta.js"></script>
 <script src="js/HousePlaneRenderOptions.js"></script>
 
-<!-- jQuery code to display an information button and box when clicked. -->
+<!-- jQuery code to display an old school information button and box when clicked. -->
 <script src="js/jquery-1.9.1.js"></script>
 <script src="js/jquery-ui.js"></script>
 <link rel=stylesheet href="css/jquery-ui.css" />
 <link rel=stylesheet href="css/info.css"/>
 <link rel=stylesheet href="css/index.css"/>
 
-<script src="js/info.js"></script>
-<div id="infoButton"></div>
-<div id="infoBox" title="Demo Information">
-This is a visualization of a Smoke filled room - data was captured in 20s intervals from 30 devices reading Particulate Matter concentrations
-</a>
-</div>
-
 <!-- GUI for experimenting with values -->
 <script type='text/javascript' src='js/DAT.GUI.min.js'></script>
 
-<!-- smoke data -->
+<!-- main app -->
 <script src="js/SmokyRoom.js"></script>
 
 <div id="ThreeJS" style="position: absolute; left:0px; top:0px"></div>
 
-<div class="pm-readings">
+<div id="pm-readings">
   <div class="title">Particulate Matter Readings</div>
-  <div>Elapsed Time: <span id="elapsed-time"></span></div>
-  <div>Sensor Ref: <span id="sensor-reference"></span></div>
-  <div>Particulate Matter: <span id="pm"></span></div>
+  <div>
+    <div class="label">Paused</div>
+    <input type="checkbox" value="paused"/>
+    <div class="label">Speed: <span id="speed"></span></div>
+    <div id="speed-slider"></div>
+    <div class="label">Elapsed Time (seconds): <span id="elapsed-time"></span></div>
+    <div id="time-slider"></div>
+    <div>Sensor Ref: <span id="sensor-reference"></span></div>
+    <div>Particulate Matter: <span id="pm"></span></div>
+    <div>Min: <span id="min"></span></div>
+    <div>Max: <span id="max"></span></div>
+  </div>
 </div>
 
 </body>

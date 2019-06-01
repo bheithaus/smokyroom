@@ -19,7 +19,9 @@ const CAMERA_START_POSITION = {
         y: 400,
         z: 1000
       },
-      ELAPSED_START_TIME = 0,
+      ELAPSED_START_TIME = 200,
+      PM_READING_INTERVAL_SECONDS = 20,
+      INITIAL_RENDER_UPDATE_INTERVAL_SECONDS = .25,
 
       trialNumber = '17',
       timeScale = 20;
@@ -33,23 +35,46 @@ const CAMERA_START_POSITION = {
  * @return {object.L}    Lightness
  */
 function scalePMtoColorHL(PM) {
-  // ~ PM range 1 - 1000
-
-  // 1 - 300 / greens
-  // 300 - 600 / yellows
+  // ~ PM range 1 - 5000
   //
-  // OldRange = (OldMax - OldMin)
-  // NewRange = (NewMax - NewMin)
-  // NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin
+  // ????
+  // thats challening to map to a color scale
+  //
+  // perhaps it should be based on 'safety' of PM levels?
+
 
   // hue, saturation, lightness - floats between 0 & 1
   // red 0 - .3 green
 
+  let hue,
+      lightness;
+
+  if (PM < 1000) {
+    hue = Math.abs(.3 - (PM * .3 / 1000));
+    lightness = .5;
+  } else {
+    hue = 0;
+    if (PM < 2000) {
+
+      // old range from 5000 - 2000
+      // new range from .1 - .3
+
+      Math.abs(PM * .3 / 3000)
+      lightness = .3;
+    } else if (PM < 3000) {
+      lightness = .2;
+    } else {
+      lightness = .1;
+    }
+  }
+
   return {
-    h: Math.abs(.3 - (PM * .3 / 1000)),
-    l: .5
+    h: hue,
+    l: lightness
   }
 }
+
+function formatMSS(s) {return(s-(s%=60))/60+(9<s?':':':0')+s}
 
 /* smoke.js */
 class Smoke {
@@ -63,6 +88,7 @@ class Smoke {
 
     // bind methods for external API
     this.onResize = this.onResize.bind(this);
+    this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.update = this.update.bind(this);
 
@@ -74,7 +100,10 @@ class Smoke {
     const { width, height } = this;
 
     this.clock = new THREE.Clock();
-    this.clock.twoSecondInterval = 0;
+    this.clock.intervalCounter = 0;
+
+    this.renderUpdateInterval = INITIAL_RENDER_UPDATE_INTERVAL_SECONDS;
+
     const renderer = this.renderer = new THREE.WebGLRenderer();
 
     renderer.setSize(width, height);
@@ -85,16 +114,10 @@ class Smoke {
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
 
-    const meshGeometry = new THREE.CubeGeometry(200, 200, 200);
-    const meshMaterial = new THREE.MeshLambertMaterial({
-      color: 0xaa6666,
-      wireframe: false
-    });
-    this.mesh = new THREE.Mesh(meshGeometry, meshMaterial);
-
     this.cubeSineDriver = 0;
     this.elapsedTime = ELAPSED_START_TIME;
 
+    this.setupDisplayBox();
     this.addGui();
     this.addCamera();
     this.addControls();
@@ -102,78 +125,170 @@ class Smoke {
     this.addLights();
     this.addHouse();
     this.addSkyBox();
-    this.addSmokePoints();
+    this.addSmokeSensorSpheres();
     this.addParticles();
-    this.addBackground();
-    this.setupDisplayBox();
 
     document.body.appendChild(renderer.domElement);
   }
 
-  evolveSmoke(delta) {
-    const { smokeParticles } = this;
+  setupOutlinePass() {
+    const {
+      renderer,
+      scene,
+      camera
+    } = this;
 
-    let smokeParticlesLength = smokeParticles.length;
+    const composer = this.composer = new THREE.EffectComposer( renderer );
+    const outlinePass = this.outlinePass = new THREE.OutlinePass( new THREE.Vector2( window.innerWidth, window.innerHeight ), scene, camera );
+    const renderPass = new THREE.RenderPass( scene, camera );
+    composer.addPass( renderPass );
+    composer.addPass( outlinePass );
+  }
 
-    while(smokeParticlesLength--) {
-      smokeParticles[smokeParticlesLength].rotation.z += delta * 0.2;
+  opacityFromPM(PM) {
+    const opacity = PM / 1000;
+
+    // value between 0 & 1
+    return opacity;
+  }
+
+  evolveSmoke(triggeredByTimeSlider) {
+    if (triggeredByTimeSlider) return ;
+
+    const {
+      smokeSensors,
+      camera,
+      clock,
+      timeSlider
+    } = this;
+
+    if (clock.intervalCounter > this.renderUpdateInterval) {
+      clock.intervalCounter = 0;
+      this.timeSlider.slider('value', this.elapsedTime);
+      this.elapsedTime += 1;
     }
+
+    const { elapsedTime } = this;
+
+    let sensor,
+        PM,
+        hl;
+
+    for (let i = 0; i < this.smokeSensors.length; i++) {
+      sensor = this.smokeSensors[i];
+      if (!sensor.particulateReadings[elapsedTime]) break;
+
+      PM = sensor.particulateReadings[elapsedTime].PM;
+
+      // every this.renderUpdateInterval seconds
+      if (clock.intervalCounter === 0) {
+        // update sphere colors with particulateReadings from data every 2 seconds
+
+        hl = scalePMtoColorHL(PM);
+        sensor.sphere.material.color.setHSL(hl.h, 0.5, hl.l);
+        this.updateDisplayBox();
+
+        // Update smokemesh opacity
+        sensor.smokeParticles.forEach((smokeMesh) => {
+          smokeMesh.material.opacity = this.opacityFromPM(PM);
+
+          // simulate 3D
+          smokeMesh.lookAt(camera.position);
+
+          // move around a little
+          // smokeMesh.translateX(1.3 * (Math.random() - .5));
+          // smokeMesh.translateY(1.3 * (Math.random() - .5));
+        });
+      }
+    };
   }
 
   setupDisplayBox() {
-    const $displayBox = $('.pm-readings');
+    const $displayBox = $('#pm-readings');
 
-    this.displayBox = {
+    this.$displayBox = {
+      speed: $displayBox.find('#speed'),
       elapsedTime: $displayBox.find('#elapsed-time'),
       sensorReference: $displayBox.find('#sensor-reference'),
-      PM: $displayBox.find('#pm')
+      PM: $displayBox.find('#pm'),
+      min: $displayBox.find('#min'),
+      max: $displayBox.find('#max'),
     };
+
+    const $this = this;
+    $('#pm-readings :checkbox').change(function(event) {
+        if ($(this).is(':checked')) {
+          $this.paused = true;
+        } else {
+          $this.paused = false;
+          $this.update();
+        }
+    });
   }
 
   updateDisplayBox() {
     const {
-      displayBox,
+      $displayBox,
       elapsedTime,
       intersectedSphere
     } = this;
 
-    displayBox.elapsedTime.text(elapsedTime);
-
+    $displayBox.elapsedTime.text(formatMSS(PM_READING_INTERVAL_SECONDS * elapsedTime));
 
     if (intersectedSphere) {
-    console.log(intersectedSphere, intersectedSphere.sensor)
       const sensor = intersectedSphere.sensor;
 
-      displayBox.sensorReference.text(sensor.sensor['Ref No.']);
+      $displayBox.sensorReference.text(sensor.sensor['Ref No.']);
+      $displayBox.min.text(sensor.meta.min);
+      $displayBox.max.text(sensor.meta.max);
 
-      if (sensor.ParticulateReadings[elapsedTime]) {
-        displayBox.PM.text(sensor.ParticulateReadings[elapsedTime].PM);
+      if (sensor.particulateReadings[elapsedTime]) {
+        $displayBox.PM.text(sensor.particulateReadings[elapsedTime].PM);
       }
     }
   }
 
   addGui() {
-    // GUI for experimenting with parameters
-    const gui = this.gui = new dat.GUI();
+    const { $displayBox } = this;
 
-    this.timeSlider = gui.add({ 'time': this.elapsedTime }, 'time')
-    .min(0)
-    .max(this.smokeSensors[0] && this.smokeSensors[0].ParticulateReadings.length)
-    .step(1)
-    .onChange((newValue) => {
-      this.elapsedTime = newValue;
-      this.updateDisplayBox();
+    // GUI for experimenting with parameters
+    this.timeSlider = $('#time-slider').slider({
+      min: 0,
+      max: this.smokeSensors[0] && this.smokeSensors[0].particulateReadings.length,
+      step: 1,
+
+      change: (event, ui) => {
+        // ~~ === performance optimized Math.floor
+        this.elapsedTime = ~~ui.value;
+        this.evolveSmoke(true);
+        this.updateDisplayBox();
+      }
     });
 
-    gui.open();
+    // TODO - attempt to fix glitch in time slider @ high speed
+    // $('#time-slider').mousedown(() => {
+
+    // })
+
+    // speedSlider
+    this.speedSlider = $('#speed-slider').slider({
+      min: 1,
+      max: 20,
+      step: 1,
+      value: INITIAL_RENDER_UPDATE_INTERVAL_SECONDS,
+
+      change: (event, ui) => {
+        // ~~ === performance optimized Math.floor
+        this.renderUpdateInterval = 1 / ~~ui.value;
+        $displayBox.speed.text(`${ 20 * ui.value } x real-time speed`);
+      }
+    });
   }
 
   addLights() {
     const { scene } = this;
-    const light = new THREE.DirectionalLight(0xffffff, 0.75);
-
-    light.position.set(-1, 0, 1);
-    scene.add(light);
+    const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+    scene.add( light );
   }
 
   addCamera() {
@@ -196,7 +311,7 @@ class Smoke {
     const { camera, renderer } = this;
 
     // CONTROLS
-    this.controls = new THREE.OrbitControls( camera, renderer.domElement );
+    this.controls = new THREE.OrbitControls(camera, renderer.domElement);
   }
 
   addStats() {
@@ -204,130 +319,107 @@ class Smoke {
     stats.domElement.style.position = 'absolute';
     stats.domElement.style.bottom = '0px';
     stats.domElement.style.zIndex = 100;
-    document.body.appendChild( stats.domElement );
+    document.body.appendChild(stats.domElement);
   }
 
   addParticles() {
     const { scene } = this;
     const textureLoader = new THREE.TextureLoader();
-    const smokeParticles = this.smokeParticles = [];
+    const texture = textureLoader.load('images/smokeparticle.png');
+    const smokeGeometry = new THREE.PlaneBufferGeometry(20, 20);
+    const spaceRandomness = 50;
 
-    textureLoader.load('images/smoke512.png', texture => {
+    this.smokeSensors.forEach((sensor) => {
       const smokeMaterial = new THREE.MeshLambertMaterial({
-        color: 0xffffff,
+        // color: 0xefefef,
         map: texture,
-        transparent: true
+        transparent: true,
+        opacity: .1
       });
       smokeMaterial.map.minFilter = THREE.LinearFilter;
-      const smokeGeometry = new THREE.PlaneBufferGeometry(300, 300);
 
       const smokeMeshes = [];
-      let limit = 10;
+      const smokeParticles = sensor.smokeParticles = [];
+      let limit = 30;
 
       while(limit--) {
         smokeMeshes[limit] = new THREE.Mesh(smokeGeometry, smokeMaterial);
-        smokeMeshes[limit].position.set(Math.random() * 500 - 250, Math.random() * 500 - 250, Math.random() * 1000 - 100);
+
+        smokeMeshes[limit].position.set(
+          sensor.position.x + (Math.random() - .5) * spaceRandomness,
+          sensor.position.y + (Math.random() - .5) * spaceRandomness,
+          sensor.position.z + (Math.random() - .5) * spaceRandomness
+        );
+
         smokeMeshes[limit].rotation.z = Math.random() * 360;
         smokeParticles.push(smokeMeshes[limit]);
+
         scene.add(smokeMeshes[limit]);
       }
+
     });
+
   }
 
-  addBackground() {
-    // const { scene } = this;
-    // const textureLoader = new THREE.TextureLoader();
-    // const textGeometry = new THREE.PlaneBufferGeometry(600, 320);
-
-    // textureLoader.load('https://rawgit.com/marcobiedermann/playground/master/three.js/smoke-particles/dist/assets/images/background.jpg', texture => {
-    //   const textMaterial = new THREE.MeshLambertMaterial({
-    //     blending: THREE.AdditiveBlending,
-    //     color: 0xffffff,
-    //     map: texture,
-    //     opacity: 1,
-    //     transparent: true
-    //   });
-    //   textMaterial.map.minFilter = THREE.LinearFilter;
-    //   const text = new THREE.Mesh(textGeometry, textMaterial);
-
-    //   text.position.z = 800;
-    //   scene.add(text);
-    // });
-  }
-
-  findRaycasterIntersects() {
+  findRaycasterIntersectedSphere() {
     const {
       raycaster,
       mouse,
       camera,
-      scene
+      scene,
+      outlinePass
     } = this;
+    let savedIntersectedSphere = this.intersectedSphere;
+    const highlightedSphereColorScalar = 80;
 
     // update the picking ray with the camera and mouse position
-    raycaster.setFromCamera( mouse, camera );
+    raycaster.setFromCamera(mouse, camera);
 
     // calculate objects intersecting the picking ray
-    var intersects = raycaster.intersectObjects( scene.children );
+    const intersects = raycaster.intersectObjects(scene.children)
+                                .filter(intersect => intersect.object && intersect.object.sensor);
 
-    if ( intersects.length > 0 ) {
-      if ( this.intersectedSphere != intersects[0].object ) {
-        if (intersects[0].object && intersects[0].object.sensor) {
-          // its a sensor sphere!
-          this.intersectedSphere = intersects[0].object;
-          this.updateDisplayBox();
-        }
+    // well this just got ugly!
+    if (intersects.length > 0) {
+      const newlyIntersected = intersects[0].object;
+
+      if (newlyIntersected == savedIntersectedSphere) {
+        return savedIntersectedSphere;
+      }
+
+      if (newlyIntersected && newlyIntersected.sensor) {
+        // its a sensor sphere!
+        // reset saved sphere to looking normal
+        if (savedIntersectedSphere) savedIntersectedSphere.material.opacity = 1;
+
+        // set newlyIntersected sphere change look
+        newlyIntersected.material.opacity = .5;
+
+        return newlyIntersected;
       }
     } else {
-      // this.intersectedSphere = null;
+      // reset saved one to looking normal
+      if (savedIntersectedSphere) savedIntersectedSphere.material.opacity = 1;
+
+      return null;
     }
   }
 
   render() {
-    const { mesh } = this;
-    let { cubeSineDriver } = this;
-
-    cubeSineDriver += 0.01;
-
-    mesh.rotation.x += 0.005;
-    mesh.rotation.y += 0.01;
-    mesh.position.z = 100 + Math.sin(cubeSineDriver) * 500;
-
-    this.findRaycasterIntersects();
-
     this.renderer.render(this.scene, this.camera);
   }
 
   update() {
-    const { clock, stats, controls, timeSlider } = this;
-    const delta = clock.getDelta();
-    let { elapsedTime } = this;
-    clock.twoSecondInterval += delta;
+    if (this.paused) return;
 
-    controls.update();
-    stats.update();
+    this.clock.intervalCounter += this.clock.getDelta();
 
-    this.evolveSmoke(this.clock.delta);
+    this.controls.update();
+    this.stats.update();
+    this.evolveSmoke();
     this.render();
 
     requestAnimationFrame(this.update);
-
-    if (clock.twoSecondInterval > 2) {
-      elapsedTime += 1;
-      clock.twoSecondInterval = 0;
-      timeSlider.setValue(elapsedTime);
-    }
-
-    this.smokeSensors.forEach((sensor) => {
-      // change color based on scale
-      var PM;
-
-      if (clock.twoSecondInterval === 0) {
-        // update with ParticulateReadings from data every 2 seconds
-        const hl = scalePMtoColorHL(sensor.ParticulateReadings[elapsedTime] && sensor.ParticulateReadings[elapsedTime].PM);
-        sensor.sphere.material.color.setHSL(hl.h, 0.5, hl.l);
-        this.updateDisplayBox();
-      }
-    });
   }
 
   // EVENT HANDLERS
@@ -343,88 +435,60 @@ class Smoke {
     this.renderer.setSize(windowWidth, windowHeight);
   }
 
-  onMouseMove( event ) {
+  onMouseMove(event) {
     const { mouse } = this;
     // calculate mouse position in normalized device coordinates
     // (-1 to +1) for both components
 
-    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+    this.intersectedSphere = this.findRaycasterIntersectedSphere();
+  }
+
+  onMouseDown(event) {
+    // return intersected sphere
+    if (this.intersectedSphere != this.selectedSphere) {
+      this.selectedSphere = this.intersectedSphere;
+      console.log('new selectedSphere', this.selectedSphere);
+
+      this.updateDisplayBox();
+    }
   }
 
   addEventListeners() {
     window.addEventListener('resize', this.onResize);
+    window.addEventListener('click', this.onMouseDown);
     window.addEventListener('mousemove', this.onMouseMove, false);
   }
 
   addSkyBox() {
     const { scene } = this;
-    const skyBoxGeometry = new THREE.CubeGeometry( 4000, 4000, 4000 );
-    const skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0xbad4ff, side: THREE.BackSide } );
-    const skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
+    const skyBoxGeometry = new THREE.CubeGeometry(4000, 4000, 4000);
+    const skyBoxMaterial = new THREE.MeshBasicMaterial({ color: 0xbad4ff, side: THREE.BackSide });
+    const skyBox = new THREE.Mesh(skyBoxGeometry, skyBoxMaterial);
 
     scene.add(skyBox);
   }
 
-  addSmokePoints() {
-    const { scene, gui } = this;
-
-
-    // HSL TESTER
-    //
-    // let storedSensor;
-    // let hsl = {
-    //   h: .3,
-    //   s: 1,
-    //   l: 1
-    // }
-
-    // gui.add(hsl, 'h')
-    //   .min(0)
-    //   .max(1)
-    //   .onChange((newValue) => {
-    //     storedSensor.sphere.material.color.setHSL(newValue, hsl.s, hsl.l);
-    //   });
-
-    // gui.add(hsl, 's')
-    //   .min(0)
-    //   .max(1)
-    //   .onChange((newValue) => {
-    //     storedSensor.sphere.material.color.setHSL(hsl.h, newValue, hsl.l);
-    //   });
-
-    // gui.add(hsl, 'l')
-    //   .min(0)
-    //   .max(1)
-    //   .onChange((newValue) => {
-    //     storedSensor.sphere.material.color.setHSL(hsl.h, hsl.s, newValue);
-    //   });
+  addSmokeSensorSpheres() {
+    // spheres
+    const { scene } = this;
 
     this.smokeSensors.forEach((sensor, i) => {
       const position = sensor.position;
-      const geometry = new THREE.SphereGeometry( 20, 10, 5 );
-      const material = new THREE.MeshBasicMaterial( {color: 0xbbb00} );
-      const sphere = new THREE.Mesh( geometry, material );
+      const geometry = new THREE.SphereGeometry(20, 16, 16);
+      const material = new THREE.MeshBasicMaterial({
+        color: 0xbbb00,
+        transparent: true
+      });
+      const sphere = new THREE.Mesh(geometry, material);
       sphere.position.set(position.x, position.y, position.z);
 
       sensor.sphere = sphere;
       sphere.sensor = sensor;
 
-      scene.add( sphere );
-
-      // console.log('create particle engine at point', smokeDataPoint),
-      // smokeDataPoint.particleValues = this.smokeParticleEngineMeta;
-
-      // // custom position
-      // smokeDataPoint.particleValues.positionBase = new THREE.Vector3( smokeDataPoint.coords.x, smokeDataPoint.coords.y, smokeDataPoint.coords.z );
-      // // smokeDataPoint.particleValues.opacity = 1;
-
-      // const engine = new ParticleEngine();
-      // engine.data = smokeDataPoint;
-      // engine.setValues( smokeDataPoint.particleValues );
-      // engine.initialize();
-
-      // this.particleEngines.push(engine);
+      scene.add(sphere);
     });
   }
 
@@ -436,7 +500,7 @@ class Smoke {
 
     const floorTexture = textureLoader.load('images/checkerboard.jpg');
     floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
-    floorTexture.repeat.set( 10, 10 );
+    floorTexture.repeat.set(10, 10);
 
     const floorMaterial = new THREE.MeshBasicMaterial({
       side: THREE.DoubleSide,
@@ -479,7 +543,7 @@ class Smoke {
       const textureLoader = new THREE.TextureLoader();
       const texture = textureLoader.load('images/rock-512.jpg');
       texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-      texture.repeat.set( 10, 10 );
+      texture.repeat.set(10, 10);
       const material = new THREE.MeshBasicMaterial({
         color: 0x444444,
         map: texture,
@@ -502,17 +566,15 @@ class Smoke {
 
     // cylinder
     (function(){
-      const geometry = new THREE.CylinderGeometry( 35, 35, 50, 64 );
-      const material = new THREE.MeshBasicMaterial( {color: 0x384170} );
-      const cylinder = new THREE.Mesh( geometry, material );
+      const geometry = new THREE.CylinderGeometry(35, 35, 50, 64);
+      const material = new THREE.MeshBasicMaterial({color: 0xff6a00});
+      const cylinder = new THREE.Mesh(geometry, material);
       cylinder.position.set(150,25,-100);
 
-      scene.add( cylinder );
+      scene.add(cylinder);
     })();
   }
 }
-
-
 
 /* app.js */
 $(function() {
@@ -546,13 +608,16 @@ function processSmokeData(promise) {
     const smokeSensors = [];
 
     // use array of sensors to position smoke emitters
-    response.sensors.forEach(function(sensor, i) {
+    response.sensors.data.forEach(function(sensor, i) {
       const referenceNumber = sensor['Ref No.'];
+      let readings;
+
       // TODO - make parsing of sensor readings more robust
       // (trial number could be problematic)
       if (!response.readings[referenceNumber + trialNumber]) {
         console.warn('WARNING: missing readings for Sensor - Ref No. ', referenceNumber)
       } else {
+        readings = response.readings[referenceNumber + trialNumber];
         smokeSensors.push({
           sensor: sensor,
           position: {
@@ -560,7 +625,8 @@ function processSmokeData(promise) {
             y: offsetY + scale * parseFloat(sensor['Y']),
             z: offsetZ + scale * parseFloat(sensor['Z'])
           },
-          ParticulateReadings: response.readings[referenceNumber + trialNumber]
+          meta: readings.meta,
+          particulateReadings: readings.data
         });
       }
     });
@@ -568,126 +634,3 @@ function processSmokeData(promise) {
     promise.resolve(smokeSensors);
   }
 }
-
-// // FUNCTIONS
-// function init()
-// {
-//   // SCENE
-//   scene = new THREE.Scene();
-//   // CAMERA
-//   var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
-//   var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 2, FAR = 5000;
-//   camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
-//   scene.add(camera);
-//   camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
-//   camera.lookAt(scene.position);
-//   // RENDERER
-//   if ( Detector.webgl )
-//     renderer = new THREE.WebGLRenderer( {antialias:true} );
-//   else
-//     renderer = new THREE.CanvasRenderer();
-//   renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-//   container = document.getElementById( 'ThreeJS' );
-//   container.appendChild( renderer.domElement );
-//   // EVENTS
-//   THREEx.WindowResize(renderer, camera);
-//   THREEx.FullScreen.bindKey({ charCode : 'm'.charCodeAt(0) });
-//   // CONTROLS
-//   controls = new THREE.OrbitControls( camera, renderer.domElement );
-//   // STATS
-//   stats = new Stats();
-//   stats.domElement.style.position = 'absolute';
-//   stats.domElement.style.bottom = '0px';
-//   stats.domElement.style.zIndex = 100;
-//   container.appendChild( stats.domElement );
-
-//   // LIGHT
-//   var light = new THREE.PointLight(0xffffff);
-//   light.position.set(0,250,0);
-//   scene.add(light);
-
-//   drawHouse(scene);
-
-//   // SKYBOX/FOG
-//   // var skyBoxGeometry = new THREE.CubeGeometry( 4000, 4000, 4000 );
-//   // var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0xbad4ff, side: THREE.BackSide } );
-//   // var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
-//   //   // scene.add(skyBox);
-
-//   ////////////
-//   // CUSTOM //
-//   ////////////
-// }
-
-
-
-// function animate()
-// {
-//   requestAnimationFrame( animate );
-//   render();
-//   update();
-// }
-
-// function restartEngine(parameters)
-// {
-//   resetCamera();
-
-//   // change to color renders or smoke renders
-
-//   window.particleEngines.forEach((engine) => {
-//     engine.destroy();
-//     engine = new ParticleEngine();
-//     engine.setValues( parameters );
-//     engine.initialize();
-//   })
-// }
-
-// function resetCamera()
-// {
-//   // CAMERA
-//   var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
-//   var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
-//   camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
-//   //camera.up = new THREE.Vector3( 0, 0, 1 );
-//   camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
-//   camera.lookAt(scene.position);
-//   scene.add(camera);
-
-//   controls = new THREE.OrbitControls( camera, renderer.domElement );
-//   THREEx.WindowResize(renderer, camera);
-// }
-
-// function update()
-// {
-//   controls.update();
-//   stats.update();
-
-//   var dt = clock.getDelta();
-//   clock.twoSecondInterval += dt;
-
-//   if (clock.twoSecondInterval > 2) {
-//     elapsedTime += 1;
-//     clock.twoSecondInterval = 0;
-//     window.timeSlider.setValue(elapsedTime);
-//   }
-
-//   window.particleEngines.forEach(function(engine) {
-//     var ParticulateReadings;
-//     if (clock.twoSecondInterval === 0) {
-//       // update with ParticulateReadings from data every 2 seconds
-//       ParticulateReadings = engine.data.ParticulateReadings[elapsedTime] && engine.data.ParticulateReadings[elapsedTime].PM  * SMOKE_ParticulateReadings_SCALE;
-
-//       // console.log('update smoke ParticulateReadings', ParticulateReadings);
-//       // console.log('engine.data', engine.data.sensor)
-//     }
-
-//     engine.update(dt, ParticulateReadings);
-//   });
-// }
-
-// function render()
-// {
-//   renderer.render( scene, camera );
-// }
-
-
