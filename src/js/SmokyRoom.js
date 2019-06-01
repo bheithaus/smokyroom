@@ -96,6 +96,18 @@ class Smoke {
     this.init();
   }
 
+  loadSmokeData(smokeSensors) {
+    if (!smokeSensors) {
+      return console.warn('Attempted to load empty data set');
+    }
+
+    this.smokeSensors = smokeSensors;
+    this.addSmokeSensorSpheres();
+    this.addParticles();
+    this.addGui();
+  }
+
+
   init() {
     const { width, height } = this;
 
@@ -118,15 +130,12 @@ class Smoke {
     this.elapsedTime = ELAPSED_START_TIME;
 
     this.setupDisplayBox();
-    this.addGui();
     this.addCamera();
     this.addControls();
     this.addStats();
     this.addLights();
     this.addHouse();
     this.addSkyBox();
-    this.addSmokeSensorSpheres();
-    this.addParticles();
 
     document.body.appendChild(renderer.domElement);
   }
@@ -576,13 +585,11 @@ class Smoke {
 
 /* app.js */
 $(function() {
-  var parameters;
+  const smoke = new Smoke();
 
   getSmokeData()
     .then(function(smokeSensors) {
-      const smoke = new Smoke({
-        smokeSensors
-      });
+      smoke.loadSmokeData(smokeSensors);
       smoke.update();
     });
 })
