@@ -1,8 +1,0 @@
-{
-    "version": 2,
-    "name": "smokyRoom",
-    "builds": [
-        { "src": "index.js", "use": "@now/node-server" },
-        { "src": "src/", "use": "@now/static" }
-    ]
-}
