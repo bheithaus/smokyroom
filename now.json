@@ -2,9 +2,9 @@
     "version": 2,
     "name": "smokyRoom",
     "builds": [
-        { "src": "server.js", "use": "@now/node" }
+        { "src": "index.js", "use": "@now/node" }
     ],
-    "routes": [
-        { "src": "/(.*)", "dest": "/$1" }
-    ]
+    // "routes": [
+    //     { "src": "/(.*)", "dest": "/$1" }
+    // ]
 }
