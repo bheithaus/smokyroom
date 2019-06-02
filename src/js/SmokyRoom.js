@@ -26,55 +26,117 @@ const CAMERA_START_POSITION = {
       trialNumber = '17',
       timeScale = 20;
 
-/**
- * [scalePMtoColorHSL description]
- * @param  {float} PM   particulate matter reading
- *
- * @return {object}    HSL
- * @return {object.H}    Hue
- * @return {object.L}    Lightness
- */
-function scalePMtoColorHL(PM) {
-  // ~ PM range 1 - 5000
-  //
-  // ????
-  // thats challening to map to a color scale
-  //
-  // perhaps it should be based on 'safety' of PM levels?
+class SmokeGUI {
+  constructor(environment) {
+    this.environment = environment;
 
+    this.init();
+  }
 
-  // hue, saturation, lightness - floats between 0 & 1
-  // red 0 - .3 green
+  init() {
+    this.getDomElements();
+    this.initSliders();
+  }
 
-  let hue,
-      lightness;
+  setTime(time) {
+    this.timeSlider.slider('value', time);
+  }
 
-  if (PM < 1000) {
-    hue = Math.abs(.3 - (PM * .3 / 1000));
-    lightness = .5;
-  } else {
-    hue = 0;
-    if (PM < 2000) {
+  initSliders() {
+    const {
+      $displayBox,
+      environment
+    } = this;
 
-      // old range from 5000 - 2000
-      // new range from .1 - .3
+    this.timeSlider = $('#time-slider').slider({
+      min: 0,
+      max: environment.smokeSensors[0] && environment.smokeSensors[0].particulateReadings.length,
+      step: 1,
 
-      Math.abs(PM * .3 / 3000)
-      lightness = .3;
-    } else if (PM < 3000) {
-      lightness = .2;
-    } else {
-      lightness = .1;
+      change: (event, ui) => {
+        // ~~ === performance optimized Math.floor
+        environment.elapsedTime = ~~ui.value;
+        environment.updateSensors();
+        this.update();
+      }
+    });
+
+    // speedSlider
+    this.speedSlider = $('#speed-slider').slider({
+      min: 1,
+      max: 20,
+      step: 1,
+      value: INITIAL_RENDER_UPDATE_INTERVAL_SECONDS,
+
+      change: (event, ui) => {
+        // ~~ === performance optimized Math.floor
+        environment.renderUpdateInterval = 1 / ~~ui.value;
+        $displayBox.speed.text(`${ 20 * ui.value } x real-time speed`);
+      }
+    });
+  }
+
+  getDomElements() {
+    const $this = this;
+    const { environment } = this;
+    const $displayBox = $('#pm-readings');
+
+    this.$displayBox = {
+      speed: $displayBox.find('#speed'),
+      elapsedTime: $displayBox.find('#elapsed-time'),
+      sensorReference: $displayBox.find('#sensor-reference'),
+      PM: $displayBox.find('#pm'),
+      min: $displayBox.find('#min'),
+      max: $displayBox.find('#max'),
+    };
+
+    $('#pm-readings :checkbox').change(function(event) {
+        if ($(this).is(':checked')) {
+          environment.pause();
+        } else {
+          environment.pause();
+          $this.update();
+        }
+    });
+  }
+
+  update() {
+    const {
+      $displayBox
+    } = this;
+
+    const {
+      elapsedTime,
+      selectedSphere
+    } = this.environment;
+
+    $displayBox.elapsedTime.text(_helpers.formatMSS(PM_READING_INTERVAL_SECONDS * elapsedTime));
+
+    if (selectedSphere) {
+      const sensor = selectedSphere.sensor;
+
+      $displayBox.sensorReference.text(sensor.sensor['Ref No.']);
+      $displayBox.min.text(sensor.meta.min);
+      $displayBox.max.text(sensor.meta.max);
+
+      if (sensor.particulateReadings[elapsedTime]) {
+        $displayBox.PM.text(sensor.particulateReadings[elapsedTime].PM);
+      }
+    }
+
+    if (selectedSphere) {
+      const sensor = selectedSphere.sensor;
+
+      $displayBox.sensorReference.text(sensor.sensor['Ref No.']);
+      $displayBox.min.text(sensor.meta.min);
+      $displayBox.max.text(sensor.meta.max);
+
+      if (sensor.particulateReadings[elapsedTime]) {
+        $displayBox.PM.text(sensor.particulateReadings[elapsedTime].PM);
+      }
     }
   }
-
-  return {
-    h: hue,
-    l: lightness
-  }
 }
-
-function formatMSS(s) {return(s-(s%=60))/60+(9<s?':':':0')+s}
 
 /* smoke.js */
 class Smoke {
@@ -96,18 +158,6 @@ class Smoke {
     this.init();
   }
 
-  loadSmokeData(smokeSensors) {
-    if (!smokeSensors) {
-      return console.warn('Attempted to load empty data set');
-    }
-
-    this.smokeSensors = smokeSensors;
-    this.addSmokeSensorSpheres();
-    this.addParticles();
-    this.addGui();
-  }
-
-
   init() {
     const { width, height } = this;
 
@@ -126,10 +176,9 @@ class Smoke {
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
 
-    this.cubeSineDriver = 0;
+    this.paused = false;
     this.elapsedTime = ELAPSED_START_TIME;
 
-    this.setupDisplayBox();
     this.addCamera();
     this.addControls();
     this.addStats();
@@ -140,46 +189,39 @@ class Smoke {
     document.body.appendChild(renderer.domElement);
   }
 
-  setupOutlinePass() {
-    const {
-      renderer,
-      scene,
-      camera
-    } = this;
+  afterDataLoaded(smokeSensors) {
+    if (!smokeSensors) {
+      return console.warn('Attempted to load empty data set');
+    }
 
-    const composer = this.composer = new THREE.EffectComposer( renderer );
-    const outlinePass = this.outlinePass = new THREE.OutlinePass( new THREE.Vector2( window.innerWidth, window.innerHeight ), scene, camera );
-    const renderPass = new THREE.RenderPass( scene, camera );
-    composer.addPass( renderPass );
-    composer.addPass( outlinePass );
+    this.smokeSensors = smokeSensors;
+    this.addSmokeSensorSpheres();
+    this.addParticles();
+
+    this.smokeGUI = new SmokeGUI(this);
   }
 
-  opacityFromPM(PM) {
-    const opacity = PM / 1000;
-
-    // value between 0 & 1
-    return opacity;
-  }
-
-  evolveSmoke() {
+  updateSensors() {
     const {
       smokeSensors,
       camera,
       clock,
-      timeSlider
+      timeSlider,
+      smokeGUI,
+      renderUpdateInterval
     } = this;
-
-    if (clock.intervalCounter > this.renderUpdateInterval) {
-      clock.intervalCounter = 0;
-      this.timeSlider.slider('value', this.elapsedTime);
-      this.elapsedTime += 1;
-    }
-
-    const { elapsedTime } = this;
 
     let sensor,
         PM,
         hl;
+
+    if (clock.intervalCounter > renderUpdateInterval) {
+      clock.intervalCounter = 0;
+      smokeGUI.setTime(this.elapsedTime);
+      this.elapsedTime += 1;
+    }
+
+    const { elapsedTime } = this;
 
     for (let i = 0; i < this.smokeSensors.length; i++) {
       sensor = this.smokeSensors[i];
@@ -189,107 +231,21 @@ class Smoke {
 
       // every this.renderUpdateInterval seconds
       if (clock.intervalCounter === 0) {
-        // update sphere colors with particulateReadings from data every 2 seconds
+        this.smokeGUI.update();
 
-        hl = scalePMtoColorHL(PM);
+        // update sphere colors with particulateReadings from data every 2 seconds
+        hl = _helpers.scalePMtoColorHL(PM);
         sensor.sphere.material.color.setHSL(hl.h, 0.5, hl.l);
-        this.updateDisplayBox();
 
         // Update smokemesh opacity
         sensor.smokeParticles.forEach((smokeMesh) => {
-          smokeMesh.material.opacity = this.opacityFromPM(PM);
+          smokeMesh.material.opacity = _helpers.opacityFromPM(PM);
 
           // simulate 3D
           smokeMesh.lookAt(camera.position);
-
-          // move around a little
-          // smokeMesh.translateX(1.3 * (Math.random() - .5));
-          // smokeMesh.translateY(1.3 * (Math.random() - .5));
         });
       }
     };
-  }
-
-  setupDisplayBox() {
-    const $displayBox = $('#pm-readings');
-
-    this.$displayBox = {
-      speed: $displayBox.find('#speed'),
-      elapsedTime: $displayBox.find('#elapsed-time'),
-      sensorReference: $displayBox.find('#sensor-reference'),
-      PM: $displayBox.find('#pm'),
-      min: $displayBox.find('#min'),
-      max: $displayBox.find('#max'),
-    };
-
-    const $this = this;
-    $('#pm-readings :checkbox').change(function(event) {
-        if ($(this).is(':checked')) {
-          $this.paused = true;
-        } else {
-          $this.paused = false;
-          $this.update();
-        }
-    });
-  }
-
-  updateDisplayBox() {
-    const {
-      $displayBox,
-      elapsedTime,
-      intersectedSphere
-    } = this;
-
-    $displayBox.elapsedTime.text(formatMSS(PM_READING_INTERVAL_SECONDS * elapsedTime));
-
-    if (intersectedSphere) {
-      const sensor = intersectedSphere.sensor;
-
-      $displayBox.sensorReference.text(sensor.sensor['Ref No.']);
-      $displayBox.min.text(sensor.meta.min);
-      $displayBox.max.text(sensor.meta.max);
-
-      if (sensor.particulateReadings[elapsedTime]) {
-        $displayBox.PM.text(sensor.particulateReadings[elapsedTime].PM);
-      }
-    }
-  }
-
-  addGui() {
-    const { $displayBox } = this;
-
-    // GUI for experimenting with parameters
-    this.timeSlider = $('#time-slider').slider({
-      min: 0,
-      max: this.smokeSensors[0] && this.smokeSensors[0].particulateReadings.length,
-      step: 1,
-
-      change: (event, ui) => {
-        // ~~ === performance optimized Math.floor
-        this.elapsedTime = ~~ui.value;
-        this.evolveSmoke();
-        this.updateDisplayBox();
-      }
-    });
-
-    // TODO - attempt to fix glitch in time slider @ high speed
-    // $('#time-slider').mousedown(() => {
-
-    // })
-
-    // speedSlider
-    this.speedSlider = $('#speed-slider').slider({
-      min: 1,
-      max: 20,
-      step: 1,
-      value: INITIAL_RENDER_UPDATE_INTERVAL_SECONDS,
-
-      change: (event, ui) => {
-        // ~~ === performance optimized Math.floor
-        this.renderUpdateInterval = 1 / ~~ui.value;
-        $displayBox.speed.text(`${ 20 * ui.value } x real-time speed`);
-      }
-    });
   }
 
   addLights() {
@@ -386,7 +342,6 @@ class Smoke {
     const intersects = raycaster.intersectObjects(scene.children)
                                 .filter(intersect => intersect.object && intersect.object.sensor);
 
-    // well this just got ugly!
     if (intersects.length > 0) {
       const newlyIntersected = intersects[0].object;
 
@@ -416,12 +371,16 @@ class Smoke {
     this.renderer.render(this.scene, this.camera);
   }
 
+  pause() {
+    this.paused = !this.paused;
+  }
+
   update() {
     if (!this.paused) {
       this.clock.intervalCounter += this.clock.getDelta();
     }
 
-    this.evolveSmoke();
+    this.updateSensors();
     this.controls.update();
     this.stats.update();
     this.render();
@@ -459,7 +418,7 @@ class Smoke {
       this.selectedSphere = this.intersectedSphere;
       console.log('new selectedSphere', this.selectedSphere);
 
-      this.updateDisplayBox();
+      this.smokeGUI.update();
     }
   }
 
@@ -589,7 +548,8 @@ $(function() {
 
   getSmokeData()
     .then(function(smokeSensors) {
-      smoke.loadSmokeData(smokeSensors);
+      smoke.afterDataLoaded(smokeSensors);
+
       smoke.update();
     });
 })
@@ -639,3 +599,64 @@ function processSmokeData(promise) {
     promise.resolve(smokeSensors);
   }
 }
+
+
+class Helpers {
+  opacityFromPM(PM) {
+    const opacity = PM / 1000;
+
+    // value between 0 & 1
+    return opacity;
+  }
+
+  /**
+   * [scalePMtoColorHSL description]
+   * @param  {float} PM   particulate matter reading
+   *
+   * @return {object}    HSL
+   * @return {object.H}    Hue
+   * @return {object.L}    Lightness
+   */
+  scalePMtoColorHL(PM) {
+    // ~ PM range 1 - 5000
+    //
+    // ????
+    // thats challening to map to a color scale
+    //
+    // perhaps it should be based on 'safety' of PM levels?
+
+
+    // hue, saturation, lightness - floats between 0 & 1
+    // red 0 - .3 green
+
+    let hue,
+        lightness;
+
+    if (PM < 1000) {
+      hue = Math.abs(.3 - (PM * .3 / 1000));
+      lightness = .5;
+    } else {
+      hue = 0;
+      if (PM < 2000) {
+
+        // old range from 5000 - 2000
+        // new range from .1 - .3
+
+        Math.abs(PM * .3 / 3000)
+        lightness = .3;
+      } else if (PM < 3000) {
+        lightness = .2;
+      } else {
+        lightness = .1;
+      }
+    }
+
+    return {
+      h: hue,
+      l: lightness
+    }
+  }
+
+  formatMSS(s) {return(s-(s%=60))/60+(9<s?':':':0')+s}
+}
+const _helpers = new Helpers();
