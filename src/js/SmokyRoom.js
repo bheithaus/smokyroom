@@ -618,16 +618,14 @@ class Helpers {
    * @return {object.L}    Lightness
    */
   scalePMtoColorHL(PM) {
-    // ~ PM range 1 - 5000
+    // ~ PM range 1 - ~6000 (?)
     //
-    // ????
-    // thats challening to map to a color scale
+    // thats challenging to map to a color scale
     //
     // perhaps it should be based on 'safety' of PM levels?
 
-
-    // hue, saturation, lightness - floats between 0 & 1
-    // red 0 - .3 green
+    // hue, lightness - floats between 0 & 1
+    // hue -> red 0 - .3 green
 
     let hue,
         lightness;
@@ -638,11 +636,6 @@ class Helpers {
     } else {
       hue = 0;
       if (PM < 2000) {
-
-        // old range from 5000 - 2000
-        // new range from .1 - .3
-
-        Math.abs(PM * .3 / 3000)
         lightness = .3;
       } else if (PM < 3000) {
         lightness = .2;

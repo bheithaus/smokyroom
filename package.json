@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/bheithaus/smokyroom#readme",
   "dependencies": {
+    "aws-sdk": "2.x",
     "dat.gui": "^0.7.6",
+    "dotenv": "^8.0.0",
     "express": "^4.17.0"
   }
 }
