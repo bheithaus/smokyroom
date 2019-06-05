@@ -13,16 +13,6 @@ const csvData = {
   readings: {}
 }
 
-// Load ENV variables in development
-console.log('No value for PORT yet:', process.env.PORT);
-
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config();
-}
-
-console.log('Now the value for PORT is:', process.env.PORT);
-
-
 // Get sensors
 const csvDb = new CsvDb(csvPaths.sensors, csvLabels.sensors)
 csvDb.get().then((data)=> {
