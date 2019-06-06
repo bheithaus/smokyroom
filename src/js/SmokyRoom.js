@@ -14,7 +14,8 @@
   author: Brian Heithaus
 */
 
-const CAMERA_START_POSITION = {
+const REF_NUMBER = 'RefNumber',
+      CAMERA_START_POSITION = {
         x: 600,
         y: 400,
         z: 1000
@@ -22,9 +23,12 @@ const CAMERA_START_POSITION = {
       ELAPSED_START_TIME = 200,
       PM_READING_INTERVAL_SECONDS = 20,
       INITIAL_RENDER_UPDATE_INTERVAL_SECONDS = .25,
-
       trialNumber = '17',
       timeScale = 20;
+
+pmDataUrl = (trialName) => {
+  return `/trial-data/${trialName}`
+}
 
 class SmokeGUI {
   constructor(environment) {
@@ -556,8 +560,9 @@ $(function() {
 
 function getSmokeData() {
   const promise = $.Deferred();
+  const trialName = 'test17';
 
-  $.get('/csv', processSmokeData(promise));
+  $.get(pmDataUrl(trialName), processSmokeData(promise));
 
   return promise;
 }
@@ -573,16 +578,15 @@ function processSmokeData(promise) {
     const smokeSensors = [];
 
     // use array of sensors to position smoke emitters
-    response.sensors.data.forEach(function(sensor, i) {
-      const referenceNumber = sensor['Ref No.'];
-      let readings;
+    response.sensors.forEach(function(sensor, i) {
+      const referenceNumber = sensor[REF_NUMBER];
 
       // TODO - make parsing of sensor readings more robust
       // (trial number could be problematic)
       if (!response.readings[referenceNumber + trialNumber]) {
         console.warn('WARNING: missing readings for Sensor - Ref No. ', referenceNumber)
       } else {
-        readings = response.readings[referenceNumber + trialNumber];
+        const readings = response.readings[referenceNumber + trialNumber];
         smokeSensors.push({
           sensor: sensor,
           position: {

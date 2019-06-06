@@ -12,5 +12,7 @@ module.exports = {
     'Ref No.'
   ],
 
-  readings: ['Time Stamp', 'PM', 'compliance']
+  readings: ['Time Stamp', 'PM', 'compliance'],
+
+  pm: 'PM'
 }
