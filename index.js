@@ -15,7 +15,7 @@ const signS3 = require('./server/signS3')
 // MongoDB
 const MongoClient = require('mongodb').MongoClient
 const mongoClient = new MongoClient(process.env.MONGODB_URI)
-const DB_NAME = 'smoke-data'
+const DB_NAME = 'heroku_dx74bbhf'
 let dbConnection;
 
 // open connection to mongoDB
