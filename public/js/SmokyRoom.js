@@ -286,6 +286,9 @@ class Smoke {
     stats.domElement.style.position = 'absolute';
     stats.domElement.style.bottom = '0px';
     stats.domElement.style.zIndex = 100;
+
+    window.statsElement = stats.domElement;
+
     document.body.appendChild(stats.domElement);
   }
 
@@ -564,7 +567,11 @@ function getSmokeData() {
   const urlParams = new URLSearchParams(window.location.search);
   const trialName = urlParams.get('trial');
 
-  $.get(pmDataUrl(trialName), processSmokeData(promise));
+  $.get(pmDataUrl(trialName), processSmokeData(promise))
+  .fail(
+    (err) => {
+      alert('No Data is stored for the Trial specified in the url --> ?trial=' + trialName)
+    });
 
   return promise;
 }

@@ -93,98 +93,6 @@ module.exports =
 /************************************************************************/
 /******/ ({
 
-/***/ "./components/SmokyRoom.js":
-/*!*********************************!*\
-  !*** ./components/SmokyRoom.js ***!
-  \*********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! next/link */ "next/link");
-/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-bootstrap */ "react-bootstrap");
-/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _components_Theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Theme */ "./components/Theme.js");
-/* harmony import */ var _styles_app_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../styles/app.scss */ "./styles/app.scss");
-/* harmony import */ var _styles_app_scss__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_styles_app_scss__WEBPACK_IMPORTED_MODULE_4__);
-
-
-
-
-
- // Straight away require/import scss/css just like in react.
-
-
-
-var SmokyRoom = function SmokyRoom(props) {
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("script", {
-    src: "js/three.min.js"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("script", {
-    src: "js/Detector.js"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("script", {
-    src: "js/Stats.js"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("script", {
-    src: "js/OrbitControls.js"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("script", {
-    src: "js/HousePlaneRenderOptions.js"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("script", {
-    src: "js/jquery-1.9.1.js"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("script", {
-    src: "js/jquery-ui.js"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("link", {
-    rel: "stylesheet",
-    href: "css/base.css"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("link", {
-    rel: "stylesheet",
-    href: "css/jquery-ui.css"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("link", {
-    rel: "stylesheet",
-    href: "css/info.css"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("link", {
-    rel: "stylesheet",
-    href: "css/index.css"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("script", {
-    src: "js/SmokyRoom.js"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    id: "pm-readings"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "title"
-  }, "Particulate Matter Readings"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "label"
-  }, "Paused"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    type: "checkbox",
-    value: "paused"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "label"
-  }, "Speed: ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-    id: "speed"
-  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    id: "speed-slider"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "label"
-  }, "Elapsed Time (seconds): ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-    id: "elapsed-time"
-  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    id: "time-slider"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Sensor Ref: ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-    id: "sensor-reference"
-  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Particulate Matter: ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-    id: "pm"
-  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Min: ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-    id: "min"
-  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Max: ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-    id: "max"
-  })))));
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (SmokyRoom);
-
-/***/ }),
-
 /***/ "./components/Theme.js":
 /*!*****************************!*\
   !*** ./components/Theme.js ***!
@@ -231,10 +139,10 @@ Theme.propTypes = {
 
 /***/ }),
 
-/***/ "./pages/index.js":
-/*!************************!*\
-  !*** ./pages/index.js ***!
-  \************************/
+/***/ "./pages/upload-processing.js":
+/*!************************************!*\
+  !*** ./pages/upload-processing.js ***!
+  \************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -244,36 +152,73 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! next/link */ "next/link");
 /* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-bootstrap */ "react-bootstrap");
-/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _components_Theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Theme */ "./components/Theme.js");
-/* harmony import */ var _components_SmokyRoom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/SmokyRoom */ "./components/SmokyRoom.js");
-/* harmony import */ var _styles_app_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../styles/app.scss */ "./styles/app.scss");
-/* harmony import */ var _styles_app_scss__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_styles_app_scss__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! next/router */ "next/router");
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-bootstrap */ "react-bootstrap");
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _components_Theme__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/Theme */ "./components/Theme.js");
+
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 
 
 
 
 
- // Straight away require/import scss/css just like in react.
 
+var Upload =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(Upload, _Component);
 
+  function Upload(props) {
+    var _this;
 
-var Index = function Index(props) {
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_SmokyRoom__WEBPACK_IMPORTED_MODULE_4__["default"], {
-    trial: props.trial
-  }));
-};
+    _classCallCheck(this, Upload);
 
-Index.getInitialProps = function (_ref) {
-  var query = _ref.query;
-  return {
-    trial: query.trial
-  };
-};
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Upload).call(this, props));
+    _this.processing = true;
+    return _this;
+  }
 
-/* harmony default export */ __webpack_exports__["default"] = (Index);
+  _createClass(Upload, [{
+    key: "render",
+    value: function render() {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_Theme__WEBPACK_IMPORTED_MODULE_4__["default"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        className: "heading"
+      }, "Upload Succeeded - ZIP file is now processing..."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        id: "preloader",
+        style: {
+          display: this.processing ? 'block' : 'none'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "spinner-sm spinner-sm-1",
+        id: "status"
+      })));
+    }
+  }]);
+
+  return Upload;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (Upload);
 
 /***/ }),
 
@@ -289,7 +234,7 @@ Index.getInitialProps = function (_ref) {
 (function () {
   "use strict";
 
-  module.exports = "/*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */\n\n/* Document\n   ========================================================================== */\n\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in iOS.\n */\n\nhtml {\n  line-height: 1.15; /* 1 */\n  -webkit-text-size-adjust: 100%; /* 2 */\n}\n\n/* Sections\n   ========================================================================== */\n\n/**\n * Remove the margin in all browsers.\n */\n\nbody {\n  margin: 0;\n}\n\n/**\n * Render the `main` element consistently in IE.\n */\n\nmain {\n  display: block;\n}\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\n\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0;\n}\n\n/* Grouping content\n   ========================================================================== */\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\n\nhr {\n  box-sizing: content-box; /* 1 */\n  height: 0; /* 1 */\n  overflow: visible; /* 2 */\n}\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\n\npre {\n  font-family: monospace, monospace; /* 1 */\n  font-size: 1em; /* 2 */\n}\n\n/* Text-level semantics\n   ========================================================================== */\n\n/**\n * Remove the gray background on active links in IE 10.\n */\n\na {\n  background-color: transparent;\n}\n\n/**\n * 1. Remove the bottom border in Chrome 57-\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\n\nabbr[title] {\n  border-bottom: none; /* 1 */\n  text-decoration: underline; /* 2 */\n  -webkit-text-decoration: underline dotted;\n          text-decoration: underline dotted; /* 2 */\n}\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\n\nb,\nstrong {\n  font-weight: bolder;\n}\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\n\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace; /* 1 */\n  font-size: 1em; /* 2 */\n}\n\n/**\n * Add the correct font size in all browsers.\n */\n\nsmall {\n  font-size: 80%;\n}\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\n\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\nsup {\n  top: -0.5em;\n}\n\n/* Embedded content\n   ========================================================================== */\n\n/**\n * Remove the border on images inside links in IE 10.\n */\n\nimg {\n  border-style: none;\n}\n\n/* Forms\n   ========================================================================== */\n\n/**\n * 1. Change the font styles in all browsers.\n * 2. Remove the margin in Firefox and Safari.\n */\n\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: inherit; /* 1 */\n  font-size: 100%; /* 1 */\n  line-height: 1.15; /* 1 */\n  margin: 0; /* 2 */\n}\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\n\nbutton,\ninput { /* 1 */\n  overflow: visible;\n}\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\n\nbutton,\nselect { /* 1 */\n  text-transform: none;\n}\n\n/**\n * Correct the inability to style clickable types in iOS and Safari.\n */\n\nbutton,\n[type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n}\n\n/**\n * Remove the inner border and padding in Firefox.\n */\n\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0;\n}\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\n\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText;\n}\n\n/**\n * Correct the padding in Firefox.\n */\n\nfieldset {\n  padding: 0.35em 0.75em 0.625em;\n}\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\n\nlegend {\n  box-sizing: border-box; /* 1 */\n  color: inherit; /* 2 */\n  display: table; /* 1 */\n  max-width: 100%; /* 1 */\n  padding: 0; /* 3 */\n  white-space: normal; /* 1 */\n}\n\n/**\n * Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\n\nprogress {\n  vertical-align: baseline;\n}\n\n/**\n * Remove the default vertical scrollbar in IE 10+.\n */\n\ntextarea {\n  overflow: auto;\n}\n\n/**\n * 1. Add the correct box sizing in IE 10.\n * 2. Remove the padding in IE 10.\n */\n\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box; /* 1 */\n  padding: 0; /* 2 */\n}\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n\n[type=\"search\"] {\n  -webkit-appearance: textfield; /* 1 */\n  outline-offset: -2px; /* 2 */\n}\n\n/**\n * Remove the inner padding in Chrome and Safari on macOS.\n */\n\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n\n::-webkit-file-upload-button {\n  -webkit-appearance: button; /* 1 */\n  font: inherit; /* 2 */\n}\n\n/* Interactive\n   ========================================================================== */\n\n/*\n * Add the correct display in Edge, IE 10+, and Firefox.\n */\n\ndetails {\n  display: block;\n}\n\n/*\n * Add the correct display in all browsers.\n */\n\nsummary {\n  display: list-item;\n}\n\n/* Misc\n   ========================================================================== */\n\n/**\n * Add the correct display in IE 10+.\n */\n\ntemplate {\n  display: none;\n}\n\n/**\n * Add the correct display in IE 10.\n */\n\n[hidden] {\n  display: none;\n}\n\nbody {\n  margin: 0; }\n\n.app-container {\n  margin: 40px; }\n\n#ThreeJS {\n  position: absolute;\n  left: 0px;\n  top: 0px; }\n\n.heading {\n  display: flex;\n  justify-content: center;\n  font-size: 20px;\n  font-weight: bold;\n  margin-top: 5em; }\n\n.text {\n  display: flex;\n  justify-content: center;\n  margin-top: 2em; }\n\n.file-upload {\n  margin: 10px auto;\n  max-width: 400px; }\n\n.img-container {\n  justify-content: center;\n  display: flex;\n  margin-top: 2em; }\n\n.img-container img {\n    width: 50px;\n    height: 50px;\n    display: flex; }\n\n#status {\n  position: absolute;\n  left: 50%;\n  /* centers the loading animation horizontally one the screen */\n  top: 50%;\n  /* centers the loading animation vertically one the screen */\n  /* is width and height divided by two */ }\n\n.spinner-sm {\n  width: 50px;\n  height: 50px;\n  background-color: #214577;\n  border-radius: 50%; }\n\n.spinner-sm:after,\n.spinner-sm:before {\n  content: '';\n  display: block;\n  width: 50px;\n  height: 50px;\n  border-radius: 50%; }\n\n.spinner-sm-1:after {\n  position: absolute;\n  top: -4px;\n  left: -4px;\n  border: 4px solid transparent;\n  border-top-color: #214577;\n  border-bottom-color: #214577;\n  -webkit-animation: spinny 0.8s linear infinite;\n          animation: spinny 0.8s linear infinite; }\n\n@-webkit-keyframes spinny {\n  0% {\n    -webkit-transform: rotate(0deg) scale(1);\n            transform: rotate(0deg) scale(1); }\n  50% {\n    -webkit-transform: rotate(90deg) scale(1.2);\n            transform: rotate(90deg) scale(1.2); }\n  100% {\n    -webkit-transform: rotate(360deg) scale(1);\n            transform: rotate(360deg) scale(1); } }\n\n@keyframes spinny {\n  0% {\n    -webkit-transform: rotate(0deg) scale(1);\n            transform: rotate(0deg) scale(1); }\n  50% {\n    -webkit-transform: rotate(90deg) scale(1.2);\n            transform: rotate(90deg) scale(1.2); }\n  100% {\n    -webkit-transform: rotate(360deg) scale(1);\n            transform: rotate(360deg) scale(1); } }\n\n@keyframes spinny {\n  0% {\n    -webkit-transform: rotate(0deg) scale(1);\n            transform: rotate(0deg) scale(1); }\n  50% {\n    -webkit-transform: rotate(90deg) scale(1.2);\n            transform: rotate(90deg) scale(1.2); }\n  100% {\n    -webkit-transform: rotate(360deg) scale(1);\n            transform: rotate(360deg) scale(1); } }\n";
+  module.exports = "/*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */\n\n/* Document\n   ========================================================================== */\n\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in iOS.\n */\n\nhtml {\n  line-height: 1.15; /* 1 */\n  -webkit-text-size-adjust: 100%; /* 2 */\n}\n\n/* Sections\n   ========================================================================== */\n\n/**\n * Remove the margin in all browsers.\n */\n\nbody {\n  margin: 0;\n}\n\n/**\n * Render the `main` element consistently in IE.\n */\n\nmain {\n  display: block;\n}\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\n\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0;\n}\n\n/* Grouping content\n   ========================================================================== */\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\n\nhr {\n  box-sizing: content-box; /* 1 */\n  height: 0; /* 1 */\n  overflow: visible; /* 2 */\n}\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\n\npre {\n  font-family: monospace, monospace; /* 1 */\n  font-size: 1em; /* 2 */\n}\n\n/* Text-level semantics\n   ========================================================================== */\n\n/**\n * Remove the gray background on active links in IE 10.\n */\n\na {\n  background-color: transparent;\n}\n\n/**\n * 1. Remove the bottom border in Chrome 57-\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\n\nabbr[title] {\n  border-bottom: none; /* 1 */\n  text-decoration: underline; /* 2 */\n  -webkit-text-decoration: underline dotted;\n          text-decoration: underline dotted; /* 2 */\n}\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\n\nb,\nstrong {\n  font-weight: bolder;\n}\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\n\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace; /* 1 */\n  font-size: 1em; /* 2 */\n}\n\n/**\n * Add the correct font size in all browsers.\n */\n\nsmall {\n  font-size: 80%;\n}\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\n\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\nsup {\n  top: -0.5em;\n}\n\n/* Embedded content\n   ========================================================================== */\n\n/**\n * Remove the border on images inside links in IE 10.\n */\n\nimg {\n  border-style: none;\n}\n\n/* Forms\n   ========================================================================== */\n\n/**\n * 1. Change the font styles in all browsers.\n * 2. Remove the margin in Firefox and Safari.\n */\n\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: inherit; /* 1 */\n  font-size: 100%; /* 1 */\n  line-height: 1.15; /* 1 */\n  margin: 0; /* 2 */\n}\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\n\nbutton,\ninput { /* 1 */\n  overflow: visible;\n}\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\n\nbutton,\nselect { /* 1 */\n  text-transform: none;\n}\n\n/**\n * Correct the inability to style clickable types in iOS and Safari.\n */\n\nbutton,\n[type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n}\n\n/**\n * Remove the inner border and padding in Firefox.\n */\n\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0;\n}\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\n\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText;\n}\n\n/**\n * Correct the padding in Firefox.\n */\n\nfieldset {\n  padding: 0.35em 0.75em 0.625em;\n}\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\n\nlegend {\n  box-sizing: border-box; /* 1 */\n  color: inherit; /* 2 */\n  display: table; /* 1 */\n  max-width: 100%; /* 1 */\n  padding: 0; /* 3 */\n  white-space: normal; /* 1 */\n}\n\n/**\n * Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\n\nprogress {\n  vertical-align: baseline;\n}\n\n/**\n * Remove the default vertical scrollbar in IE 10+.\n */\n\ntextarea {\n  overflow: auto;\n}\n\n/**\n * 1. Add the correct box sizing in IE 10.\n * 2. Remove the padding in IE 10.\n */\n\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box; /* 1 */\n  padding: 0; /* 2 */\n}\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n\n[type=\"search\"] {\n  -webkit-appearance: textfield; /* 1 */\n  outline-offset: -2px; /* 2 */\n}\n\n/**\n * Remove the inner padding in Chrome and Safari on macOS.\n */\n\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n\n::-webkit-file-upload-button {\n  -webkit-appearance: button; /* 1 */\n  font: inherit; /* 2 */\n}\n\n/* Interactive\n   ========================================================================== */\n\n/*\n * Add the correct display in Edge, IE 10+, and Firefox.\n */\n\ndetails {\n  display: block;\n}\n\n/*\n * Add the correct display in all browsers.\n */\n\nsummary {\n  display: list-item;\n}\n\n/* Misc\n   ========================================================================== */\n\n/**\n * Add the correct display in IE 10+.\n */\n\ntemplate {\n  display: none;\n}\n\n/**\n * Add the correct display in IE 10.\n */\n\n[hidden] {\n  display: none;\n}\n\nbody {\n  margin: 0; }\n\n.app-container {\n  margin: 40px; }\n\n.navbar {\n  position: absolute;\n  top: 2px;\n  right: 2px;\n  width: 300px;\n  height: 50px;\n  background: white;\n  z-index: 2;\n  text-align: center;\n  padding-top: 30px;\n  font-size: 2em; }\n\n#ThreeJS {\n  position: absolute;\n  left: 0px;\n  top: 0px; }\n\n.heading {\n  display: flex;\n  justify-content: center;\n  font-size: 20px;\n  font-weight: bold;\n  margin-top: 5em; }\n\n.text {\n  display: flex;\n  justify-content: center;\n  margin-top: 2em; }\n\n.file-upload {\n  margin: 10px auto;\n  max-width: 400px; }\n\n.img-container {\n  justify-content: center;\n  display: flex;\n  margin-top: 2em; }\n\n.img-container img {\n    width: 50px;\n    height: 50px;\n    display: flex; }\n\n#status {\n  position: absolute;\n  left: 50%;\n  /* centers the loading animation horizontally one the screen */\n  top: 50%;\n  /* centers the loading animation vertically one the screen */\n  /* is width and height divided by two */ }\n\n.spinner-sm {\n  width: 50px;\n  height: 50px;\n  background-color: #214577;\n  border-radius: 50%; }\n\n.spinner-sm:after,\n.spinner-sm:before {\n  content: '';\n  display: block;\n  width: 50px;\n  height: 50px;\n  border-radius: 50%; }\n\n.spinner-sm-1:after {\n  position: absolute;\n  top: -4px;\n  left: -4px;\n  border: 4px solid transparent;\n  border-top-color: #214577;\n  border-bottom-color: #214577;\n  -webkit-animation: spinny 0.8s linear infinite;\n          animation: spinny 0.8s linear infinite; }\n\n@-webkit-keyframes spinny {\n  0% {\n    -webkit-transform: rotate(0deg) scale(1);\n            transform: rotate(0deg) scale(1); }\n  50% {\n    -webkit-transform: rotate(90deg) scale(1.2);\n            transform: rotate(90deg) scale(1.2); }\n  100% {\n    -webkit-transform: rotate(360deg) scale(1);\n            transform: rotate(360deg) scale(1); } }\n\n@keyframes spinny {\n  0% {\n    -webkit-transform: rotate(0deg) scale(1);\n            transform: rotate(0deg) scale(1); }\n  50% {\n    -webkit-transform: rotate(90deg) scale(1.2);\n            transform: rotate(90deg) scale(1.2); }\n  100% {\n    -webkit-transform: rotate(360deg) scale(1);\n            transform: rotate(360deg) scale(1); } }\n\n@keyframes spinny {\n  0% {\n    -webkit-transform: rotate(0deg) scale(1);\n            transform: rotate(0deg) scale(1); }\n  50% {\n    -webkit-transform: rotate(90deg) scale(1.2);\n            transform: rotate(90deg) scale(1.2); }\n  100% {\n    -webkit-transform: rotate(360deg) scale(1);\n            transform: rotate(360deg) scale(1); } }\n";
 })();
 
 /***/ }),
@@ -312,13 +257,13 @@ Index.getInitialProps = function (_ref) {
 /***/ }),
 
 /***/ 3:
-/*!******************************!*\
-  !*** multi ./pages/index.js ***!
-  \******************************/
+/*!******************************************!*\
+  !*** multi ./pages/upload-processing.js ***!
+  \******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! ./pages/index.js */"./pages/index.js");
+module.exports = __webpack_require__(/*! ./pages/upload-processing.js */"./pages/upload-processing.js");
 
 
 /***/ }),
@@ -331,6 +276,17 @@ module.exports = __webpack_require__(/*! ./pages/index.js */"./pages/index.js");
 /***/ (function(module, exports) {
 
 module.exports = require("next/link");
+
+/***/ }),
+
+/***/ "next/router":
+/*!******************************!*\
+  !*** external "next/router" ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("next/router");
 
 /***/ }),
 
@@ -368,4 +324,4 @@ module.exports = require("react-bootstrap");
 /***/ })
 
 /******/ });
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=upload-processing.js.map

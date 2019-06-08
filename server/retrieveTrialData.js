@@ -6,7 +6,7 @@ const csvData = {
   readings: {}
 }
 
-const retrieveTrialData = (request, response) => {
+const retrieveTrialData = (request, response, n) => {
   const trialName = request.params.trialName;
   // TODO enforce trialName is safe to query DB
   console.log('got request to get PM reading data for trial :', request.params.trialName);
@@ -20,6 +20,8 @@ const retrieveTrialData = (request, response) => {
     csvData.trialName = trialName;
 
     response.json(csvData);
+  }).catch((err) => {
+    n(err)
   })
 }
 

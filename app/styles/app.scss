@@ -10,6 +10,20 @@ body {
   margin: 40px;
 }
 
+.navbar {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 300px;
+  height: 50px;
+  background: white;
+  z-index: 2;
+
+  text-align: center;
+  padding-top: 30px;
+  font-size: 2em;
+}
+
 #ThreeJS {
   position: absolute;
   left:0px;

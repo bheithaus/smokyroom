@@ -27,10 +27,10 @@ app.use(cookieParser());
 app.use('/', express.static(path.join(__dirname, 'public')));
 
 // attach database connection
-app.use((request, response, next) => {
+app.use((request, response, n) => {
   console.log('set db connection', db)
   request.db = db
-  next()
+  n()
 })
 
 const start = async (port) => {
