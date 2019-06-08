@@ -4,8 +4,9 @@
   "description": "Three.js smoke filled room visualization",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "cd app && next build",
+    "start": "npm run build && env NODE_ENV=production node app.js",
+    "dev": "nodemon --ignore app/ app.js"
   },
   "repository": {
     "type": "git",
@@ -17,11 +18,78 @@
     "url": "https://github.com/bheithaus/smokyroom/issues"
   },
   "homepage": "https://github.com/bheithaus/smokyroom#readme",
+  "eslintConfig": {
+    "extends": "airbnb",
+    "settings": {
+      "import/core-modules": [
+        "styled-jsx/css"
+      ]
+    },
+    "rules": {
+      "arrow-parens": "off",
+      "global-require": "off",
+      "indent": [
+        "error",
+        4
+      ],
+      "no-console": "off",
+      "comma-dangle": "off",
+      "no-underscore-dangle": "off",
+      "func-names": "off",
+      "no-use-before-define": "off",
+      "react/jsx-indent": [
+        "error",
+        4
+      ],
+      "react/jsx-indent-props": [
+        "error",
+        4
+      ],
+      "react/jsx-filename-extension": [
+        1,
+        {
+          "extensions": [
+            ".js",
+            ".jsx"
+          ]
+        }
+      ],
+      "react/react-in-jsx-scope": "off",
+      "react/no-danger": "off"
+    }
+  },
   "dependencies": {
+    "autoprefixer": "^9.3.1",
     "aws-sdk": "^2.468.0",
-    "dat.gui": "^0.7.6",
+    "babel-plugin-module-resolver": "^3.1.1",
+    "babel-plugin-wrap-in-js": "^1.1.0",
+    "body-parser": "^1.18.2",
+    "cookie-parser": "^1.4.3",
     "dotenv": "^8.0.0",
-    "express": "^4.17.0",
-    "mongodb": "^3.2.7"
+    "express": "^4.16.2",
+    "glob": "^7.1.2",
+    "isomorphic-unfetch": "^3.0.0",
+    "mongodb": "^3.2.7",
+    "morgan": "^1.9.0",
+    "next": "^7.0.2",
+    "node-sass": "^4.4.0",
+    "normalize.css": "^8.0.1",
+    "postcss-easy-import": "^3.0.0",
+    "postcss-loader": "^3.0.0",
+    "prop-types": "^15.6.0",
+    "raw-loader": "^0.5.1",
+    "react": "^16.6.3",
+    "react-bootstrap": "^0.32.4",
+    "react-dom": "^16.6.3",
+    "sass-loader": "^7.1.0",
+    "three": "^0.105.2"
+  },
+  "devDependencies": {
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.11.1",
+    "nodemon": "^1.12.1"
   }
 }

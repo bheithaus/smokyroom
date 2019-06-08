@@ -40,7 +40,7 @@ const processTrialData = (request, response) => {
 
   // TODO enforce request originates from my AWS lambda
 
-  const pmTrialsCollection = request.dbConnection.collection('trials')
+  const pmTrialsCollection = request.db.connection.collection('trials')
   const cleanRegExp = /.*\/|.csv/g;
 
   // get trial directory from s3

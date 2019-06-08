@@ -11,7 +11,7 @@ const retrieveTrialData = (request, response) => {
   // TODO enforce trialName is safe to query DB
   console.log('got request to get PM reading data for trial :', request.params.trialName);
 
-  const pmTrialsCollection = request.dbConnection.collection('trials')
+  const pmTrialsCollection = request.db.connection.collection('trials')
 
   pmTrialsCollection.findOne({
     _id: trialName,

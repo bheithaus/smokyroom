@@ -6,43 +6,19 @@ if (process.env.NODE_ENV !== 'production') {
 const express = require('express')
 const path = require('path')
 const app = express()
+const STATIC_DIRECTORY = path.join(__dirname, '/src')
 
 // Custom Route Handlers
 const processTrialData = require('./server/processTrialData')
 const retrieveTrialData = require('./server/retrieveTrialData')
 const signS3 = require('./server/signS3')
 
-// MongoDB
-const MongoClient = require('mongodb').MongoClient
-const mongoClient = new MongoClient(process.env.MONGODB_URI)
-const DB_NAME = 'heroku_dx74bbhf'
-let dbConnection;
-
-// open connection to mongoDB
-mongoClient.connect(function(err) {
-  if (err) {
-    return console.log('mongo error', err)
-  }
-
-  console.log('Connected successfully to database')
-
-  dbConnection = mongoClient.db(DB_NAME)
-})
-
-// close mongoDB connection when app closes
-process.on('SIGINT', function() {
-  mongoClient.close(function () {
-    console.log('MongoDB disconnected on app termination')
-    process.exit(0)
-  })
-})
-
 // sign request for s3 upload from client
 // for uploading zip file
 app.get('/sign-s3', signS3)
 
 // static server
-app.use('/', express.static(path.join(__dirname, '/src')))
+app.use('/', express.static(STATIC_DIRECTORY))
 
 // attach database connection
 app.use((request, response, next) => {
