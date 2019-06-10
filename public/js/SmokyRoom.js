@@ -27,7 +27,7 @@ const REF_NUMBER_NAMESPACE = 'RefNumber',
       timeScale = 20;
 
 pmDataUrl = (trialName) => {
-  return `/trial-data/${trialName}`
+  return `/api/trial-data/${trialName}`
 }
 
 class SmokeGUI {

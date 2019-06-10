@@ -18,6 +18,7 @@ const Index = (props) => (
 );
 
 Index.getInitialProps = ({query}) => {
+  console.log('wtf', query)
   return {
     trial: query.trial
   }

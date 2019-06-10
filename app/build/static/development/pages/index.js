@@ -28528,6 +28528,7 @@ var Index = function Index(props) {
 
 Index.getInitialProps = function (_ref) {
   var query = _ref.query;
+  console.log('wtf', query);
   return {
     trial: query.trial
   };
@@ -28590,7 +28591,7 @@ Index.getInitialProps = function (_ref) {
 
 /***/ }),
 
-/***/ 5:
+/***/ 3:
 /*!******************************!*\
   !*** multi ./pages/index.js ***!
   \******************************/
@@ -28615,5 +28616,5 @@ module.exports = dll_a157f92690def1f61193;
 
 /***/ })
 
-},[[5,"static/runtime/webpack.js"]]]));;
+},[[3,"static/runtime/webpack.js"]]]));;
 //# sourceMappingURL=index.js.map

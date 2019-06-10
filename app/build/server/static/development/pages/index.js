@@ -88,7 +88,7 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -359,6 +359,7 @@ var Index = function Index(props) {
 
 Index.getInitialProps = function (_ref) {
   var query = _ref.query;
+  console.log('wtf', query);
   return {
     trial: query.trial
   };
@@ -402,7 +403,7 @@ Index.getInitialProps = function (_ref) {
 
 /***/ }),
 
-/***/ 5:
+/***/ 3:
 /*!******************************!*\
   !*** multi ./pages/index.js ***!
   \******************************/
