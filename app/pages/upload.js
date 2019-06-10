@@ -6,6 +6,8 @@ import Router from 'next/router';
 import { Button } from 'react-bootstrap'
 import Theme from '../components/Theme'
 
+import routes from '../../routes'
+
 class Upload extends Component {
   constructor(props) {
     super(props)
@@ -34,7 +36,7 @@ class Upload extends Component {
   getSignedRequest(file) {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open('GET', `/sign-s3?file-name=${file.name}&file-type=${file.type}`);
+      xhr.open('GET', `${routes.signS3}?file-name=${file.name}&file-type=${file.type}`);
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
@@ -53,7 +55,7 @@ class Upload extends Component {
   }
 
   nameFromOptions(options) {
-    return options.file.name.replace('.csv','')
+    return options.file.name.replace('.zip','')
   }
   uploadFile(options) {
     const xhr = new XMLHttpRequest();
@@ -63,8 +65,6 @@ class Upload extends Component {
         if(xhr.status === 200){
           console.log('file', this.nameFromOptions(options))
           Router.push(`/upload-processing?trial=${ this.nameFromOptions(options) }`)
-          // TODO - send to waiting page ?
-          // then when files processed, send to home page
         }
         else{
           alert('Could not upload file.');
