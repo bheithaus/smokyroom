@@ -11,23 +11,28 @@ const trialsFromRequest = (request) => {
   return request.db.connection.collection('trials')
 }
 
-const retrieveTrialData = (request, response, n) => {
+let trials
+const isDoneProcessing = (request, response, n) => {
   const trialName = request.params.trialName;
   // TODO enforce trialName is safe to query DB
   console.log('got request to get PM reading data for trial :', request.params.trialName);
-  const pmTrialsCollection = trialsFromRequest(request)
 
-  pmTrialsCollection.findOne({
+  if (!trials) {
+    trials = trialsFromRequest(request)
+  }
+
+  console.log('trials', trialName)
+
+  trials.findOne({
     _id: trialName,
-  }).then((trialData) => {
-    csvData.readings = trialData.data;
-    csvData.trialName = trialName;
+  }).then((data) => {
+    response.json({
+      isDoneProcessing: !!data
+    });
+  }).catch((err) => console.log(err))
 
-    response.json(csvData);
-  }).catch((err) => {
-    n(err)
-  })
+
 }
 
 
-module.exports = retrieveTrialData;
+module.exports = isDoneProcessing;

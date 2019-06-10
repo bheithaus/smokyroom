@@ -1,6 +1,8 @@
 @import 'normalize.css';
 
 $primary-color: black;
+$blue: #15B5E2;
+$btn-bg: #10131C;
 
 body {
   margin: 0;
@@ -14,13 +16,6 @@ body {
   position: absolute;
   top: 2px;
   right: 2px;
-  width: 300px;
-  height: 50px;
-  background: white;
-  z-index: 2;
-
-  text-align: center;
-  padding-top: 30px;
   font-size: 2em;
 }
 
@@ -126,5 +121,74 @@ body {
   }
   100% {
     transform: rotate(360deg) scale(1);
+  }
+}
+
+
+// super button!!
+// ///
+// //
+// /
+.btn-wrapper {
+  width: 290px;
+  height: 110px;
+  position: relative;
+  margin: 40px auto 0;
+
+  &:hover {
+    .btn-inner {
+      top: -4px;
+      transform: scale(1, 1);
+      cursor: pointer;
+    }
+  }
+
+  &__container {
+    border-bottom: 2px solid $blue;
+    position: absolute;
+    width: 100%;
+    height: 80px;
+
+    &:before,
+    &:after {
+      border-bottom: 2px solid $blue;
+      width: 96%;
+      left: 2%;
+      bottom: -8px;
+      content: "";
+      position: absolute;
+    }
+
+    &:after {
+      width: 92%;
+      left: 4%;
+      bottom: -14px;
+    }
+
+    .btn-inner {
+      width: 104.2%;
+      height: 100%;
+      position: absolute;
+      top: 20px;
+      left: -2.1%;
+      border: 2px solid $blue;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Source Code Pro', monospace;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-size: 18px;
+      background: $btn-bg;
+      transform: scale(.96, .96);
+      transition: all .3s;
+      z-index: 4;
+
+      &__text {
+        text-decoration: none;
+        color: $blue;
+      }
+    }
   }
 }

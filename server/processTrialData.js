@@ -93,16 +93,16 @@ const processTrialData = (request, response) => {
         // console.log('insert into DB', trialName, trialPMReadings);
 
         pmTrialsCollection.update({
-          _id: trialName,
-        },
-        {
-          _id: trialName,
-          data: trialPMReadings
-        },
-        {
-          upsert: true
+            _id: trialName,
+          },
+          {
+            _id: trialName,
+            data: trialPMReadings
+          },
+          {
+            upsert: true
+          })
         })
-      })
   })
 
   response.json({

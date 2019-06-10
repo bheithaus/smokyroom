@@ -52,13 +52,17 @@ class Upload extends Component {
 
   }
 
+  nameFromOptions(options) {
+    return options.file.name.replace('.csv','')
+  }
   uploadFile(options) {
     const xhr = new XMLHttpRequest();
     xhr.open('PUT', options.signedRequest);
     xhr.onreadystatechange = () => {
       if(xhr.readyState === 4){
         if(xhr.status === 200){
-          Router.push('/upload-processing')
+          console.log('file', this.nameFromOptions(options))
+          Router.push(`/upload-processing?trial=${ this.nameFromOptions(options) }`)
           // TODO - send to waiting page ?
           // then when files processed, send to home page
         }

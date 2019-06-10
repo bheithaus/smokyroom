@@ -16,6 +16,8 @@ const app = express();
 // Custom Route Handlers
 const processTrialData = require('./server/processTrialData')
 const retrieveTrialData = require('./server/retrieveTrialData')
+const isDoneProcessing = require('./server/isDoneProcessing')
+
 const signS3 = require('./server/signS3')
 const db = require('./server/database')
 
@@ -27,9 +29,14 @@ app.use(cookieParser());
 app.use('/', express.static(path.join(__dirname, 'public')));
 
 // attach database connection
+console.log('how is that running so much?')
 app.use((request, response, n) => {
-  console.log('set db connection', db)
-  request.db = db
+  // TODO - theres got to be a betttter way!
+  if (!request.db) {
+    request.db = db
+  }
+  console.log('request @ time ', Date.now())
+
   n()
 })
 
@@ -40,12 +47,17 @@ const start = async (port) => {
 
   // sign request for s3 upload from client
   // for uploading zip file
+  //
+  // TODO -- ASAP -- move routes into object
+  // and standardize with /api/
   app.get('/sign-s3', signS3)
 
   app.get('/trial-data/:trialName', retrieveTrialData)
 
   //  on data upload (called from AWS Lambda)
   app.get('/uploaded/:trialName', processTrialData)
+
+  app.get('/api/is-processing-complete/:trialName', isDoneProcessing)
 
   // Normal routing, if you need it.
   // Use your SSR logic here.

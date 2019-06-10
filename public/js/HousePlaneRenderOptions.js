@@ -4,7 +4,7 @@ window.housePlaneRenderOptions = [
     position: {
       x: 0,
       y: 225,
-      z: -325
+      z: -250
     },
     rotation: {
       x: Math.PI,
@@ -30,7 +30,7 @@ window.housePlaneRenderOptions = [
       z: 0,
     },
     size: {
-      h: 650,
+      h: 500,
       w: 450
     }
   },
@@ -47,7 +47,7 @@ window.housePlaneRenderOptions = [
       z: 0,
     },
     size: {
-      h: 650,
+      h: 500,
       w: 450
     }
   },

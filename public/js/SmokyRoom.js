@@ -20,7 +20,7 @@ const REF_NUMBER_NAMESPACE = 'RefNumber',
         y: 400,
         z: 1000
       },
-      ELAPSED_START_TIME = 200,
+      ELAPSED_START_TIME = 0,
       PM_READING_INTERVAL_SECONDS = 20,
       INITIAL_RENDER_UPDATE_INTERVAL_SECONDS = .25,
       trialNumber = '17',
@@ -542,7 +542,7 @@ class Smoke {
       const geometry = new THREE.CylinderGeometry(35, 35, 50, 64);
       const material = new THREE.MeshBasicMaterial({color: 0xff6a00});
       const cylinder = new THREE.Mesh(geometry, material);
-      cylinder.position.set(150,25,-100);
+      cylinder.position.set(150,25,-200);
 
       scene.add(cylinder);
     })();
@@ -613,7 +613,6 @@ function processSmokeData(promise) {
   }
 }
 
-
 class Helpers {
   opacityFromPM(PM) {
     const opacity = PM / 1000;
@@ -643,17 +642,22 @@ class Helpers {
     let hue,
         lightness;
 
-    if (PM < 1000) {
-      hue = Math.abs(.3 - (PM * .3 / 1000));
+    // set minimum at which PM is very bad
+    const pmRed = 600;
+
+    if (PM < pmRed) {
+      hue = Math.abs(.3 - (PM * .3 / pmRed));
       lightness = .5;
     } else {
       hue = 0;
-      if (PM < 2000) {
+      if (PM < 2*pmRed) {
         lightness = .3;
-      } else if (PM < 3000) {
+      } else if (PM < 3*pmRed) {
         lightness = .2;
-      } else {
+      } else if (PM < 4*pmRed) {
         lightness = .1;
+      } else {
+        lightness = .03;
       }
     }
 
