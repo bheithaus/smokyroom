@@ -15,7 +15,8 @@ if (process.env.NODE_ENV !== 'production') {
 const app = express();
 // Custom Route Handlers
 const processTrialData = require('./server/api/processTrialData')
-const retrieveTrialData = require('./server/api/retrieveTrialData')
+const getTrials = require('./server/api/getTrials')
+const getTrialData = require('./server/api/getTrialData')
 const isDoneProcessing = require('./server/api/isDoneProcessing')
 const signS3 = require('./server/api/signS3')
 
@@ -51,7 +52,8 @@ const start = async (port) => {
   // TODO -- ASAP -- move routes into object
   // and standardize with /api/
   app.get('/api/sign-s3', signS3)
-  app.get('/api/trial-data/:trialName', retrieveTrialData)
+  app.get('/api/trials', getTrials)
+  app.get('/api/trial-data/:trialName', getTrialData)
   //  on data upload (called from AWS Lambda)
   app.get('/api/trial-uploaded/:trialName', processTrialData)
   app.get('/api/is-processing-complete/:trialName', isDoneProcessing)

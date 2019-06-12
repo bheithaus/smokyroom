@@ -10,7 +10,7 @@ class SmokyRoom extends Component {
 
   render() {
     return (
-      <div>
+      <Theme>
         <script src="js/three.min.js"></script>
 
         <script src="js/Detector.js"></script>
@@ -34,11 +34,13 @@ class SmokyRoom extends Component {
         <div id="pm-readings">
           <div className="title">Particulate Matter Readings</div>
           <div>
-            <div className="label">Paused</div>
-            <input type="checkbox" value="paused"/>
-            <div className="label">Speed: <span id="speed"></span></div>
+            <div className="">Paused:
+              <input type="checkbox" value="paused"/>
+            </div>
+
+            <div className="">Speed: <span id="speed"></span></div>
             <div id="speed-slider"></div>
-            <div className="label">Elapsed Time (seconds): <span id="elapsed-time"></span></div>
+            <div className="">Elapsed Time (seconds): <span id="elapsed-time"></span></div>
             <div id="time-slider"></div>
             <div>Sensor Ref: <span id="sensor-reference"></span></div>
             <div>Particulate Matter: <span id="pm"></span></div>
@@ -46,7 +48,7 @@ class SmokyRoom extends Component {
             <div>Max: <span id="max"></span></div>
           </div>
         </div>
-      </div>
+      </Theme>
     );
   }
 }

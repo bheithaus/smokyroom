@@ -102,42 +102,140 @@ module.exports =
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! next/link */ "next/link");
-/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-bootstrap */ "react-bootstrap");
-/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _components_Theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Theme */ "./components/Theme.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "@babel/runtime/regenerator");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! next/link */ "next/link");
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-bootstrap */ "react-bootstrap");
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _components_Theme__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/Theme */ "./components/Theme.js");
+/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-select */ "react-select");
+/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_select__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! axios */ "axios");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_6__);
+
+
+
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
 
 
 
+ // Hack to work with non-react implementation of Three.js scene
 
 var removeCanvas = function removeCanvas() {
   var canvas = document.getElementsByTagName('canvas');
-  console.log('remove canvas!', canvas);
   document.body.removeChild(canvas[0]);
   document.body.removeChild(window.statsElement);
-};
+}; // TODO - put drop down select with test trials loaded
+
 
 var Navbar = function Navbar(props) {
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
+      _useState2 = _slicedToArray(_useState, 2),
+      selectOptions = _useState2[0],
+      setSelectOptions = _useState2[1];
+
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(),
+      _useState4 = _slicedToArray(_useState3, 2),
+      selected = _useState4[0],
+      setSelected = _useState4[1];
+
+  var selectHandleChange = function selectHandleChange(selectedOption) {
+    setSelected(selectedOption);
+    window.location = window.location.origin + "/?trial=".concat(selectedOption.value);
+  };
+
+  Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
+    var AVAILABLE_TRIALS_URL = '/api/trials';
+
+    var fetchAvailableTrials =
+    /*#__PURE__*/
+    function () {
+      var _ref = _asyncToGenerator(
+      /*#__PURE__*/
+      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        var response, options;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.prev = 0;
+                _context.next = 3;
+                return axios__WEBPACK_IMPORTED_MODULE_6___default.a.get(AVAILABLE_TRIALS_URL);
+
+              case 3:
+                response = _context.sent;
+                options = response.data.map(function (trial) {
+                  return {
+                    value: trial,
+                    label: trial
+                  };
+                });
+                setSelectOptions(options);
+                _context.next = 11;
+                break;
+
+              case 8:
+                _context.prev = 8;
+                _context.t0 = _context["catch"](0);
+                console.log(_context.t0);
+
+              case 11:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[0, 8]]);
+      }));
+
+      return function fetchAvailableTrials() {
+        return _ref.apply(this, arguments);
+      };
+    }();
+
+    fetchAvailableTrials();
+  }, []);
+
+  var selectWithData = function selectWithData() {
+    if (!selectOptions.length) {
+      return null;
+    }
+
+    return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react_select__WEBPACK_IMPORTED_MODULE_5___default.a, {
+      value: selected,
+      onChange: selectHandleChange,
+      options: selectOptions
+    });
+  };
+
+  return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
     className: "navbar"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(next_link__WEBPACK_IMPORTED_MODULE_1___default.a, {
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(next_link__WEBPACK_IMPORTED_MODULE_2___default.a, {
     href: "/upload"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "btn-wrapper"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "btn-wrapper__container",
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "btn btn-primary"
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
     onClick: removeCanvas
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "btn-inner"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-    className: "btn-inner__text"
-  }, "Upload Trial Data"))))));
+  }, "Upload Trial Data"))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    id: "select-trial"
+  }, "Select Trial"), selectWithData());
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Navbar);
@@ -201,7 +299,7 @@ function (_Component) {
   _createClass(SmokyRoom, [{
     key: "render",
     value: function render() {
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("script", {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_Theme__WEBPACK_IMPORTED_MODULE_3__["default"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("script", {
         src: "js/three.min.js"
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("script", {
         src: "js/Detector.js"
@@ -236,18 +334,18 @@ function (_Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "title"
       }, "Particulate Matter Readings"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "label"
-      }, "Paused"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        className: ""
+      }, "Paused:", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "checkbox",
         value: "paused"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "label"
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: ""
       }, "Speed: ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         id: "speed"
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         id: "speed-slider"
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "label"
+        className: ""
       }, "Elapsed Time (seconds): ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         id: "elapsed-time"
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -381,7 +479,7 @@ Index.getInitialProps = function (_ref) {
 (function () {
   "use strict";
 
-  module.exports = "/*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */\n\n/* Document\n   ========================================================================== */\n\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in iOS.\n */\n\nhtml {\n  line-height: 1.15; /* 1 */\n  -webkit-text-size-adjust: 100%; /* 2 */\n}\n\n/* Sections\n   ========================================================================== */\n\n/**\n * Remove the margin in all browsers.\n */\n\nbody {\n  margin: 0;\n}\n\n/**\n * Render the `main` element consistently in IE.\n */\n\nmain {\n  display: block;\n}\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\n\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0;\n}\n\n/* Grouping content\n   ========================================================================== */\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\n\nhr {\n  box-sizing: content-box; /* 1 */\n  height: 0; /* 1 */\n  overflow: visible; /* 2 */\n}\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\n\npre {\n  font-family: monospace, monospace; /* 1 */\n  font-size: 1em; /* 2 */\n}\n\n/* Text-level semantics\n   ========================================================================== */\n\n/**\n * Remove the gray background on active links in IE 10.\n */\n\na {\n  background-color: transparent;\n}\n\n/**\n * 1. Remove the bottom border in Chrome 57-\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\n\nabbr[title] {\n  border-bottom: none; /* 1 */\n  text-decoration: underline; /* 2 */\n  -webkit-text-decoration: underline dotted;\n          text-decoration: underline dotted; /* 2 */\n}\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\n\nb,\nstrong {\n  font-weight: bolder;\n}\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\n\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace; /* 1 */\n  font-size: 1em; /* 2 */\n}\n\n/**\n * Add the correct font size in all browsers.\n */\n\nsmall {\n  font-size: 80%;\n}\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\n\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\nsup {\n  top: -0.5em;\n}\n\n/* Embedded content\n   ========================================================================== */\n\n/**\n * Remove the border on images inside links in IE 10.\n */\n\nimg {\n  border-style: none;\n}\n\n/* Forms\n   ========================================================================== */\n\n/**\n * 1. Change the font styles in all browsers.\n * 2. Remove the margin in Firefox and Safari.\n */\n\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: inherit; /* 1 */\n  font-size: 100%; /* 1 */\n  line-height: 1.15; /* 1 */\n  margin: 0; /* 2 */\n}\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\n\nbutton,\ninput { /* 1 */\n  overflow: visible;\n}\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\n\nbutton,\nselect { /* 1 */\n  text-transform: none;\n}\n\n/**\n * Correct the inability to style clickable types in iOS and Safari.\n */\n\nbutton,\n[type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n}\n\n/**\n * Remove the inner border and padding in Firefox.\n */\n\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0;\n}\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\n\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText;\n}\n\n/**\n * Correct the padding in Firefox.\n */\n\nfieldset {\n  padding: 0.35em 0.75em 0.625em;\n}\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\n\nlegend {\n  box-sizing: border-box; /* 1 */\n  color: inherit; /* 2 */\n  display: table; /* 1 */\n  max-width: 100%; /* 1 */\n  padding: 0; /* 3 */\n  white-space: normal; /* 1 */\n}\n\n/**\n * Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\n\nprogress {\n  vertical-align: baseline;\n}\n\n/**\n * Remove the default vertical scrollbar in IE 10+.\n */\n\ntextarea {\n  overflow: auto;\n}\n\n/**\n * 1. Add the correct box sizing in IE 10.\n * 2. Remove the padding in IE 10.\n */\n\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box; /* 1 */\n  padding: 0; /* 2 */\n}\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n\n[type=\"search\"] {\n  -webkit-appearance: textfield; /* 1 */\n  outline-offset: -2px; /* 2 */\n}\n\n/**\n * Remove the inner padding in Chrome and Safari on macOS.\n */\n\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n\n::-webkit-file-upload-button {\n  -webkit-appearance: button; /* 1 */\n  font: inherit; /* 2 */\n}\n\n/* Interactive\n   ========================================================================== */\n\n/*\n * Add the correct display in Edge, IE 10+, and Firefox.\n */\n\ndetails {\n  display: block;\n}\n\n/*\n * Add the correct display in all browsers.\n */\n\nsummary {\n  display: list-item;\n}\n\n/* Misc\n   ========================================================================== */\n\n/**\n * Add the correct display in IE 10+.\n */\n\ntemplate {\n  display: none;\n}\n\n/**\n * Add the correct display in IE 10.\n */\n\n[hidden] {\n  display: none;\n}\n\nbody {\n  margin: 0; }\n\n.app-container {\n  margin: 40px; }\n\n.navbar {\n  position: absolute;\n  top: 2px;\n  right: 2px;\n  font-size: 2em; }\n\n#ThreeJS {\n  position: absolute;\n  left: 0px;\n  top: 0px; }\n\n.heading {\n  display: flex;\n  justify-content: center;\n  font-size: 20px;\n  font-weight: bold;\n  margin-top: 5em; }\n\n.text {\n  display: flex;\n  justify-content: center;\n  margin-top: 2em; }\n\n.file-upload {\n  margin: 10px auto;\n  max-width: 400px; }\n\n.img-container {\n  justify-content: center;\n  display: flex;\n  margin-top: 2em; }\n\n.img-container img {\n    width: 50px;\n    height: 50px;\n    display: flex; }\n\n#status {\n  position: absolute;\n  left: 50%;\n  /* centers the loading animation horizontally one the screen */\n  top: 50%;\n  /* centers the loading animation vertically one the screen */\n  /* is width and height divided by two */ }\n\n.spinner-sm {\n  width: 50px;\n  height: 50px;\n  background-color: #214577;\n  border-radius: 50%; }\n\n.spinner-sm:after,\n.spinner-sm:before {\n  content: '';\n  display: block;\n  width: 50px;\n  height: 50px;\n  border-radius: 50%; }\n\n.spinner-sm-1:after {\n  position: absolute;\n  top: -4px;\n  left: -4px;\n  border: 4px solid transparent;\n  border-top-color: #214577;\n  border-bottom-color: #214577;\n  -webkit-animation: spinny 0.8s linear infinite;\n          animation: spinny 0.8s linear infinite; }\n\n@-webkit-keyframes spinny {\n  0% {\n    -webkit-transform: rotate(0deg) scale(1);\n            transform: rotate(0deg) scale(1); }\n  50% {\n    -webkit-transform: rotate(90deg) scale(1.2);\n            transform: rotate(90deg) scale(1.2); }\n  100% {\n    -webkit-transform: rotate(360deg) scale(1);\n            transform: rotate(360deg) scale(1); } }\n\n@keyframes spinny {\n  0% {\n    -webkit-transform: rotate(0deg) scale(1);\n            transform: rotate(0deg) scale(1); }\n  50% {\n    -webkit-transform: rotate(90deg) scale(1.2);\n            transform: rotate(90deg) scale(1.2); }\n  100% {\n    -webkit-transform: rotate(360deg) scale(1);\n            transform: rotate(360deg) scale(1); } }\n\n@keyframes spinny {\n  0% {\n    -webkit-transform: rotate(0deg) scale(1);\n            transform: rotate(0deg) scale(1); }\n  50% {\n    -webkit-transform: rotate(90deg) scale(1.2);\n            transform: rotate(90deg) scale(1.2); }\n  100% {\n    -webkit-transform: rotate(360deg) scale(1);\n            transform: rotate(360deg) scale(1); } }\n\n.btn-wrapper {\n  width: 290px;\n  height: 110px;\n  position: relative;\n  margin: 40px auto 0; }\n\n.btn-wrapper:hover .btn-inner {\n    top: -4px;\n    -webkit-transform: scale(1, 1);\n            transform: scale(1, 1);\n    cursor: pointer; }\n\n.btn-wrapper__container {\n    border-bottom: 2px solid #15B5E2;\n    position: absolute;\n    width: 100%;\n    height: 80px; }\n\n.btn-wrapper__container:before, .btn-wrapper__container:after {\n      border-bottom: 2px solid #15B5E2;\n      width: 96%;\n      left: 2%;\n      bottom: -8px;\n      content: \"\";\n      position: absolute; }\n\n.btn-wrapper__container:after {\n      width: 92%;\n      left: 4%;\n      bottom: -14px; }\n\n.btn-wrapper__container .btn-inner {\n      width: 104.2%;\n      height: 100%;\n      position: absolute;\n      top: 20px;\n      left: -2.1%;\n      border: 2px solid #15B5E2;\n      box-sizing: border-box;\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      font-family: 'Source Code Pro', monospace;\n      letter-spacing: 1px;\n      text-transform: uppercase;\n      font-size: 18px;\n      background: #10131C;\n      -webkit-transform: scale(0.96, 0.96);\n              transform: scale(0.96, 0.96);\n      transition: all .3s;\n      z-index: 4; }\n\n.btn-wrapper__container .btn-inner__text {\n        text-decoration: none;\n        color: #15B5E2; }\n";
+  module.exports = "/*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */\n\n/* Document\n   ========================================================================== */\n\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in iOS.\n */\n\nhtml {\n  line-height: 1.15; /* 1 */\n  -webkit-text-size-adjust: 100%; /* 2 */\n}\n\n/* Sections\n   ========================================================================== */\n\n/**\n * Remove the margin in all browsers.\n */\n\nbody {\n  margin: 0;\n}\n\n/**\n * Render the `main` element consistently in IE.\n */\n\nmain {\n  display: block;\n}\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\n\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0;\n}\n\n/* Grouping content\n   ========================================================================== */\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\n\nhr {\n  box-sizing: content-box; /* 1 */\n  height: 0; /* 1 */\n  overflow: visible; /* 2 */\n}\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\n\npre {\n  font-family: monospace, monospace; /* 1 */\n  font-size: 1em; /* 2 */\n}\n\n/* Text-level semantics\n   ========================================================================== */\n\n/**\n * Remove the gray background on active links in IE 10.\n */\n\na {\n  background-color: transparent;\n}\n\n/**\n * 1. Remove the bottom border in Chrome 57-\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\n\nabbr[title] {\n  border-bottom: none; /* 1 */\n  text-decoration: underline; /* 2 */\n  -webkit-text-decoration: underline dotted;\n          text-decoration: underline dotted; /* 2 */\n}\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\n\nb,\nstrong {\n  font-weight: bolder;\n}\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\n\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace; /* 1 */\n  font-size: 1em; /* 2 */\n}\n\n/**\n * Add the correct font size in all browsers.\n */\n\nsmall {\n  font-size: 80%;\n}\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\n\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\nsup {\n  top: -0.5em;\n}\n\n/* Embedded content\n   ========================================================================== */\n\n/**\n * Remove the border on images inside links in IE 10.\n */\n\nimg {\n  border-style: none;\n}\n\n/* Forms\n   ========================================================================== */\n\n/**\n * 1. Change the font styles in all browsers.\n * 2. Remove the margin in Firefox and Safari.\n */\n\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: inherit; /* 1 */\n  font-size: 100%; /* 1 */\n  line-height: 1.15; /* 1 */\n  margin: 0; /* 2 */\n}\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\n\nbutton,\ninput { /* 1 */\n  overflow: visible;\n}\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\n\nbutton,\nselect { /* 1 */\n  text-transform: none;\n}\n\n/**\n * Correct the inability to style clickable types in iOS and Safari.\n */\n\nbutton,\n[type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n}\n\n/**\n * Remove the inner border and padding in Firefox.\n */\n\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0;\n}\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\n\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText;\n}\n\n/**\n * Correct the padding in Firefox.\n */\n\nfieldset {\n  padding: 0.35em 0.75em 0.625em;\n}\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\n\nlegend {\n  box-sizing: border-box; /* 1 */\n  color: inherit; /* 2 */\n  display: table; /* 1 */\n  max-width: 100%; /* 1 */\n  padding: 0; /* 3 */\n  white-space: normal; /* 1 */\n}\n\n/**\n * Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\n\nprogress {\n  vertical-align: baseline;\n}\n\n/**\n * Remove the default vertical scrollbar in IE 10+.\n */\n\ntextarea {\n  overflow: auto;\n}\n\n/**\n * 1. Add the correct box sizing in IE 10.\n * 2. Remove the padding in IE 10.\n */\n\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box; /* 1 */\n  padding: 0; /* 2 */\n}\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n\n[type=\"search\"] {\n  -webkit-appearance: textfield; /* 1 */\n  outline-offset: -2px; /* 2 */\n}\n\n/**\n * Remove the inner padding in Chrome and Safari on macOS.\n */\n\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n\n::-webkit-file-upload-button {\n  -webkit-appearance: button; /* 1 */\n  font: inherit; /* 2 */\n}\n\n/* Interactive\n   ========================================================================== */\n\n/*\n * Add the correct display in Edge, IE 10+, and Firefox.\n */\n\ndetails {\n  display: block;\n}\n\n/*\n * Add the correct display in all browsers.\n */\n\nsummary {\n  display: list-item;\n}\n\n/* Misc\n   ========================================================================== */\n\n/**\n * Add the correct display in IE 10+.\n */\n\ntemplate {\n  display: none;\n}\n\n/**\n * Add the correct display in IE 10.\n */\n\n[hidden] {\n  display: none;\n}\n\nbody {\n  margin: 0; }\n\n.navbar {\n  position: absolute;\n  top: 0;\n  right: 0;\n  font-size: 1.5em;\n  margin: 10px 20px;\n  padding: 20px;\n  background: white; }\n\n.navbar #select-trial {\n    margin-top: 10px; }\n\n#ThreeJS {\n  position: absolute;\n  left: 0px;\n  top: 0px; }\n\n.heading {\n  display: flex;\n  justify-content: center;\n  font-size: 20px;\n  font-weight: bold;\n  margin-top: 5em; }\n\n.text {\n  display: flex;\n  justify-content: center;\n  margin-top: 2em; }\n\n.file-upload {\n  margin: 10px auto;\n  max-width: 400px; }\n\n.img-container {\n  justify-content: center;\n  display: flex;\n  margin-top: 2em; }\n\n.img-container img {\n    width: 50px;\n    height: 50px;\n    display: flex; }\n\n#status {\n  position: absolute;\n  left: 50%;\n  /* centers the loading animation horizontally one the screen */\n  top: 50%;\n  /* centers the loading animation vertically one the screen */\n  /* is width and height divided by two */ }\n\n.spinner-sm {\n  width: 50px;\n  height: 50px;\n  background-color: #214577;\n  border-radius: 50%; }\n\n.spinner-sm:after,\n.spinner-sm:before {\n  content: '';\n  display: block;\n  width: 50px;\n  height: 50px;\n  border-radius: 50%; }\n\n.spinner-sm-1:after {\n  position: absolute;\n  top: -4px;\n  left: -4px;\n  border: 4px solid transparent;\n  border-top-color: #214577;\n  border-bottom-color: #214577;\n  -webkit-animation: spinny 0.8s linear infinite;\n          animation: spinny 0.8s linear infinite; }\n\n@-webkit-keyframes spinny {\n  0% {\n    -webkit-transform: rotate(0deg) scale(1);\n            transform: rotate(0deg) scale(1); }\n  50% {\n    -webkit-transform: rotate(90deg) scale(1.2);\n            transform: rotate(90deg) scale(1.2); }\n  100% {\n    -webkit-transform: rotate(360deg) scale(1);\n            transform: rotate(360deg) scale(1); } }\n\n@keyframes spinny {\n  0% {\n    -webkit-transform: rotate(0deg) scale(1);\n            transform: rotate(0deg) scale(1); }\n  50% {\n    -webkit-transform: rotate(90deg) scale(1.2);\n            transform: rotate(90deg) scale(1.2); }\n  100% {\n    -webkit-transform: rotate(360deg) scale(1);\n            transform: rotate(360deg) scale(1); } }\n\n@keyframes spinny {\n  0% {\n    -webkit-transform: rotate(0deg) scale(1);\n            transform: rotate(0deg) scale(1); }\n  50% {\n    -webkit-transform: rotate(90deg) scale(1.2);\n            transform: rotate(90deg) scale(1.2); }\n  100% {\n    -webkit-transform: rotate(360deg) scale(1);\n            transform: rotate(360deg) scale(1); } }\n\n.btn-wrapper {\n  width: 290px;\n  height: 110px;\n  position: relative;\n  margin: 40px auto 0; }\n\n.btn-wrapper:hover .btn-inner {\n    top: -4px;\n    -webkit-transform: scale(1, 1);\n            transform: scale(1, 1);\n    cursor: pointer; }\n\n.btn-wrapper__container {\n    border-bottom: 2px solid #15B5E2;\n    position: absolute;\n    width: 100%;\n    height: 80px; }\n\n.btn-wrapper__container:before, .btn-wrapper__container:after {\n      border-bottom: 2px solid #15B5E2;\n      width: 96%;\n      left: 2%;\n      bottom: -8px;\n      content: \"\";\n      position: absolute; }\n\n.btn-wrapper__container:after {\n      width: 92%;\n      left: 4%;\n      bottom: -14px; }\n\n.btn-wrapper__container .btn-inner {\n      width: 104.2%;\n      height: 100%;\n      position: absolute;\n      top: 20px;\n      left: -2.1%;\n      border: 2px solid #15B5E2;\n      box-sizing: border-box;\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      font-family: 'Source Code Pro', monospace;\n      letter-spacing: 1px;\n      text-transform: uppercase;\n      font-size: 18px;\n      background: #10131C;\n      -webkit-transform: scale(0.96, 0.96);\n              transform: scale(0.96, 0.96);\n      transition: all .3s;\n      z-index: 4; }\n\n.btn-wrapper__container .btn-inner__text {\n        text-decoration: none;\n        color: #15B5E2; }\n";
 })();
 
 /***/ }),
@@ -412,6 +510,28 @@ Index.getInitialProps = function (_ref) {
 
 module.exports = __webpack_require__(/*! ./pages/index.js */"./pages/index.js");
 
+
+/***/ }),
+
+/***/ "@babel/runtime/regenerator":
+/*!*********************************************!*\
+  !*** external "@babel/runtime/regenerator" ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("@babel/runtime/regenerator");
+
+/***/ }),
+
+/***/ "axios":
+/*!************************!*\
+  !*** external "axios" ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("axios");
 
 /***/ }),
 
@@ -456,6 +576,17 @@ module.exports = require("react");
 /***/ (function(module, exports) {
 
 module.exports = require("react-bootstrap");
+
+/***/ }),
+
+/***/ "react-select":
+/*!*******************************!*\
+  !*** external "react-select" ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("react-select");
 
 /***/ })
 

@@ -1,27 +1,17 @@
-const sensors = require('./sensorPositions')
-
-// output format
-const csvData = {
-  sensors: sensors,
-  readings: {}
-}
-
 // object navigation path to the Trials Collection
-const trialsFromRequest = (request) => {
-  return request.db.connection.collection('trials')
-}
+const trialsFromRequest = (request) => request.db.connection.collection('trials');
 
-let trials
-const isDoneProcessing = (request, response, n) => {
-  const trialName = request.params.trialName;
+let trials;
+const isDoneProcessing = (request, response) => {
+  const { trialName } = request.params;
   // TODO enforce trialName is safe to query DB
   console.log('got request to get PM reading data for trial :', request.params.trialName);
 
   if (!trials) {
-    trials = trialsFromRequest(request)
+    trials = trialsFromRequest(request);
   }
 
-  console.log('trials', trialName)
+  console.log('trials', trialName);
 
   trials.findOne({
     _id: trialName,
@@ -29,10 +19,8 @@ const isDoneProcessing = (request, response, n) => {
     response.json({
       isDoneProcessing: !!data
     });
-  }).catch((err) => console.log(err))
-
-
-}
+  }).catch((err) => console.log(err));
+};
 
 
 module.exports = isDoneProcessing;
