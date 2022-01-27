@@ -84,7 +84,7 @@
     "react-dom": "^16.6.3",
     "react-select": "^3.0.4",
     "sass-loader": "^7.1.0",
-    "three": "^0.105.2"
+    "three": "^0.137.0"
   },
   "devDependencies": {
     "eslint": "^5.9.0",
