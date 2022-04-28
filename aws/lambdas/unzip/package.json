@@ -5,7 +5,7 @@
   "author": "saku",
   "license": "MIT",
   "devDependencies": {
-    "async": "1.2.0",
+    "async": "2.6.4",
     "jszip": "2.5.0",
     "mime-types": "2.0.13"
   }
