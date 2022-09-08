@@ -6,7 +6,7 @@
   "license": "MIT",
   "devDependencies": {
     "async": "1.2.0",
-    "jszip": "2.5.0",
+    "jszip": "2.7.0",
     "mime-types": "2.0.13"
   }
 }
